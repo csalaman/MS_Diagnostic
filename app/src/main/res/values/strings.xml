@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MS_Diagnostic</string>
     <string name="tap_button">Tap Here! :]</string>
+    <string name="to_tap_activity">Tap Test</string>
 </resources>
