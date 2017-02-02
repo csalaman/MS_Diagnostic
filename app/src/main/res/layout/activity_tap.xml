@@ -8,7 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cmsc436.ms_diagnostic.TapActivity">
+    tools:context="com.cmsc436.ms_diagnostic.TapActivity"
+    android:background="@color/colorPrimary">
 
     <Button
         android:text="@string/tap_button"
@@ -16,7 +17,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/button_tap" />
+        android:id="@+id/button_tap"
+        style="@style/Widget.AppCompat.Button"
+        android:background="@color/colorAccent"/>
 
     <TextView
         android:text = "@string/tap_count"
@@ -26,6 +29,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="74dp"
         android:id="@+id/tap_count" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/button_tap"
+        android:layout_alignStart="@+id/button_tap"
+        android:layout_marginTop="34dp"
+        android:id="@+id/tap_hands" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:id="@+id/text_instructions"
+        android:layout_below="@+id/tap_hands"
+        android:layout_alignLeft="@+id/tap_hands"
+        android:layout_alignStart="@+id/tap_hands" />
 
 
 </RelativeLayout>

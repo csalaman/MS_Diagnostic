@@ -3,4 +3,7 @@
     <string name="tap_button">Tap Here! :]</string>
     <string name="to_tap_activity">Tap Test</string>
     <string name = "tap_count">Start Tapping!</string>
+    <string name="tap_instructions">Start Tapping in: %d</string>
+    <string name="tap_hand">Please use: </string>
+    <string name="tap_start_tapping">START TAPPING</string>
 </resources>
