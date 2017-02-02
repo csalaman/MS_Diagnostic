@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">MS_Diagnostic</string>
-    <string name="tap_button">Tap Here! :]</string>
-    <string name="to_tap_activity">Tap Test</string>
-    <string name = "tap_count">Start Tapping!</string>
+    <string name="tap_button">Tap</string>
+    <string name="to_tap_activity">Start Test</string>
+    <string name ="tap_count">Start Tapping!</string>
     <string name="tap_instructions">Start Tapping in: %d</string>
     <string name="tap_hand">Please use: </string>
     <string name="tap_start_tapping">START TAPPING</string>
+    <string name="Main_message">This is a Multiple Sclerosis Test. When ready, Start the Test.</string>
+
 </resources>

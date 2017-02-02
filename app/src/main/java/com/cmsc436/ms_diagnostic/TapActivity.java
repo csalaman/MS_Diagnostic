@@ -18,34 +18,38 @@ public class TapActivity extends Activity {
     int count = 0;
     TextView text;
     TextView instructions;
-    TextView hands;
+
     CountDownTimer startTimer;
     CountDownTimer recordTimer;
     Boolean isDone = false;
+    Button button ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_tap);
-        hands = (TextView) findViewById(R.id.tap_hands);
-        hands.setText("Hands to Use: Left");
+        button = (Button) findViewById(R.id.button_tap);
+        button.setVisibility(View.INVISIBLE);
+
         instructions = (TextView) findViewById(R.id.text_instructions);
         startTimer = new CountDownTimer(5000,1000){
 
 
             @Override
             public void onTick(long millisUntilFinished) {
-//                instructions.setText(getResources().getQuantityText(R.string.tap_instructions,(int)millisUntilFinished/1000));
                 instructions.setText("Start Tapping in:" + (int)(millisUntilFinished/1000));
             }
 
             @Override
             public void onFinish() {
                 instructions.setText(R.string.tap_start_tapping);
-            }
-        }.start();
+
+            }}.start();
+
         text = (TextView) findViewById(R.id.tap_count);
+
         recordTimer = new CountDownTimer(10000,1000) {
+
             @Override
             public void onTick(long millisUntilFinished) {
                 instructions.setText("Keep Tapping for: "+(int) millisUntilFinished/1000+" sec");
@@ -59,24 +63,25 @@ public class TapActivity extends Activity {
                 }else{
                     isDone = true;
                     text.setText("Time to Switch Hands!");
-                    hands.setText("Hand to use: Right");
                     startTimer.start();
                     recordTimer.start();
                 }
             }
+
         }.start();
 
 
-        final Button button = (Button) findViewById(R.id.button_tap);
+
+        button.setVisibility(View.VISIBLE);
         button.setOnClickListener(new View.OnClickListener() {
             int count_taps = 0;
 
             public void onClick(View v) {
                 // Perform action on click
-                startTimer.cancel();
-               count_taps++;
-               count = count_taps;
-               text.setText("You have tapped " + count + " times!");
+
+                count_taps++;
+                count = count_taps;
+                text.setText("You have tapped " + count + " times!");
             }
         });
 

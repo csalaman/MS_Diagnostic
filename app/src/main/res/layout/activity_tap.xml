@@ -13,11 +13,13 @@
 
     <Button
         android:text="@string/tap_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textSize="80dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/button_tap"
+        android:textColor="@color/text_color"
         style="@style/Widget.AppCompat.Button"
         android:background="@color/colorAccent"/>
 
@@ -30,15 +32,7 @@
         android:layout_marginBottom="74dp"
         android:id="@+id/tap_count" />
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/button_tap"
-        android:layout_alignStart="@+id/button_tap"
-        android:layout_marginTop="34dp"
-        android:id="@+id/tap_hands" />
+
 
     <TextView
         android:text="TextView"
