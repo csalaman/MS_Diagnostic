@@ -23,26 +23,46 @@
         style="@style/Widget.AppCompat.Button"
         android:background="@color/colorAccent"/>
 
-    <TextView
-        android:text = "@string/tap_count"
-        android:layout_width="wrap_content"
+    <!--<TextView-->
+        <!--android:text = "@string/tap_count"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="74dp"-->
+        <!--android:id="@+id/tap_count" />-->
+
+    <!--<TextView-->
+        <!--android:text="TextView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignLeft="@+id/button_tap"-->
+        <!--android:layout_alignStart="@+id/button_tap"-->
+        <!--android:layout_marginTop="34dp"-->
+        <!--android:id="@+id/tap_hands" />-->
+
+    <Button
+        android:text="Start"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/button_tap"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="74dp"
-        android:id="@+id/tap_count" />
-
-
+        android:layout_marginTop="17dp"
+        android:background="#00cc00"
+        android:textColor="@color/text_color"
+        android:id="@+id/start_button" />
 
     <TextView
-        android:text="TextView"
+        android:textColor="@color/text_color"
+        android:text="Timer: 10"
+        android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:id="@+id/text_instructions"
-        android:layout_below="@+id/tap_hands"
-        android:layout_alignLeft="@+id/tap_hands"
-        android:layout_alignStart="@+id/tap_hands" />
+        android:layout_marginTop="28dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>
