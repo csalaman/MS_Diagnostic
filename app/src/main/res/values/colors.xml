@@ -5,4 +5,5 @@
     <color name="colorSecondary">#80DEEA</color>
     <color name="colorAccent">#f9b24f</color>
     <color name="text_color">#ffffff</color>
+    <color name="colorAccentPressed">#FFFF9500</color>
 </resources>
