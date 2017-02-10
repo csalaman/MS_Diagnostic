@@ -1,11 +1,12 @@
 package com.cmsc436.ms_diagnostic;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.TextView;
 
-public class Results extends AppCompatActivity {
+public class Results extends Activity {
     TextView leftHand;
     TextView rightHand;
     @Override

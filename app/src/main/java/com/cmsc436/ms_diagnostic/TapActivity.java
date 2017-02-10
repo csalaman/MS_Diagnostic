@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -77,11 +78,12 @@ public class TapActivity extends Activity {
                     //count reset for next hand
                     count = 0;
                     // Set hand Instruction to Right
-                    hand.setText("HAND: Right");
+                    hand.setText("HAND: Left");
                 }
             }
 
         };
+
 
         start_button.setOnClickListener(new View.OnClickListener(){
 
@@ -99,6 +101,7 @@ public class TapActivity extends Activity {
                         count = count_taps;
                     }
                 });
+
             }
 
         });
