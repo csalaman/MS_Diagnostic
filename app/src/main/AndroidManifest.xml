@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".TapActivity" />
         <activity android:name=".Results" />
+        <activity android:name=".Trace"></activity>
     </application>
 
 </manifest>
