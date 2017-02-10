@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -47,16 +48,26 @@ public class DrawView extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        drawCanvas = new Canvas(canvasBitmap);
-    }
+    public boolean onTouchEvent(MotionEvent motionEvent){
+        float X = getX();
+        float Y = getY();
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
-        canvas.drawPath(drawPath, drawPaint);
+        Path drawPath = new Path();
+
+        switch (motionEvent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                drawPath.moveTo(X,Y);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                drawPath.moveTo(X,Y);
+                break;
+            case MotionEvent.ACTION_UP:
+                drawPath.moveTo(X,Y);
+                break;
+            default: return false;
+        }
+        invalidate();
+        return true;
+
     }
 }
