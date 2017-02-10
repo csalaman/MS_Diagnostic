@@ -47,6 +47,20 @@ public class DrawView extends View {
         canvasPaint = new Paint(Paint.DITHER_FLAG);
     }
 
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        drawCanvas = new Canvas(canvasBitmap);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+        canvas.drawPath(drawPath, drawPaint);
+    }
+    
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent){
         float X = getX();
