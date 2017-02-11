@@ -120,7 +120,10 @@ public class DrawView extends View {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                timer.cancel();
+                if(timer != null){
+                    timer.cancel();
+                }
+
                 drawPath.moveTo(X,Y);
                 break;
             case MotionEvent.ACTION_MOVE:
