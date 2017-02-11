@@ -24,6 +24,6 @@ public class Results extends Activity {
         rightHand.setText("RIGHT: "+getIntent().getLongExtra(Trace.STATE_RH,-9999999));
 
 
-        
+
     }
 }

@@ -49,5 +49,13 @@
         android:layout_toRightOf="@+id/timer_object"
         android:layout_toEndOf="@+id/timer_object" />
 
+    <ImageView
+
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:foregroundGravity="center"
+        android:background = "@drawable/ic_spiral_svg2"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
