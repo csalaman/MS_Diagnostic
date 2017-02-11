@@ -18,7 +18,8 @@ public class MainActivity extends Activity {
 
     // changes
     public void toTapActivity(View view){
-        startActivity(new Intent(MainActivity.this,TapActivity.class));
+        //startActivity(new Intent(MainActivity.this,TapActivity.class));
+        startActivity(new Intent(this,Trace.class));
     }
 
 }

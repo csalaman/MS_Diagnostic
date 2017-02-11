@@ -18,10 +18,10 @@ public class Results extends Activity {
         //Gets data from the Intent that started the activity
         // and sets it to the left hand and right hand
         leftHand = (TextView) findViewById(R.id.tap_count_left);
-        leftHand.setText(getIntent().getStringExtra("LEFT"));
+        leftHand.setText("LEFT: "+ getIntent().getLongExtra(Trace.STATE_LH,-99999999));
 
         rightHand = (TextView) findViewById(R.id.tap_count_right);
-        rightHand.setText(getIntent().getStringExtra("RIGHT"));
+        rightHand.setText("RIGHT: "+getIntent().getLongExtra(Trace.STATE_RH,-9999999));
 
 
     }
