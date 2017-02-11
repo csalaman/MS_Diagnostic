@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -14,6 +15,10 @@ import android.view.View;
  */
 
 public class DrawView extends View {
+    private static final int TIMEOUT = 5000;
+
+    CountDownTimer timer;
+
     //drawing path
     private Path drawPath;
 
@@ -60,28 +65,52 @@ public class DrawView extends View {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
     }
-    
+
     @Override
-    public boolean onTouchEvent(MotionEvent motionEvent){
-        float X = getX();
-        float Y = getY();
+    public boolean onTouchEvent(MotionEvent event){
+        float X = event.getX();
+        float Y = event.getY();
 
-        Path drawPath = new Path();
+        //Path drawPath = new Path();
 
-        switch (motionEvent.getAction()){
+        switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                timer.cancel();
                 drawPath.moveTo(X,Y);
                 break;
             case MotionEvent.ACTION_MOVE:
-                drawPath.moveTo(X,Y);
+                drawPath.lineTo(X, Y);
                 break;
             case MotionEvent.ACTION_UP:
-                drawPath.moveTo(X,Y);
+                drawCanvas.drawPath(drawPath, drawPaint);
+
+                //drawPath.lineTo(X, Y); //not sure if needed
+                drawPath.reset(); //not sure if needed
+
+                startTimeoutClock();
                 break;
-            default: return false;
+
+            default:
+                return false;
         }
+
         invalidate();
         return true;
 
     }
+
+    private void startTimeoutClock() {
+        timer = new CountDownTimer(TIMEOUT, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
+
+
 }
