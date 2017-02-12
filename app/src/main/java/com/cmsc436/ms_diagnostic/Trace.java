@@ -3,7 +3,6 @@ package com.cmsc436.ms_diagnostic;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +14,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+
+import static android.os.Environment.DIRECTORY_PICTURES;
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class Trace extends AppCompatActivity {
 
@@ -69,7 +71,8 @@ public class Trace extends AppCompatActivity {
 
 
 
-        String path = Environment.getExternalStorageDirectory().getPath();
+        //String path = Environment.getExternalStorageDirectory().getPath();
+        String path = getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getPath();
         String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
         //File file = new File("/mnt" + path + imageName);
 

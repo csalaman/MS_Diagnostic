@@ -44,7 +44,7 @@ public class DrawView extends View {
     private float currentBrushSize, lastBrushSize;
 
     // various constructors for loading XML
-    public DrawView(Context context) {
+    /*public DrawView(Context context) {
         super(context);
         drawPath = new Path();
         drawPaint = new Paint();
@@ -55,7 +55,7 @@ public class DrawView extends View {
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-    }
+    }      */
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
