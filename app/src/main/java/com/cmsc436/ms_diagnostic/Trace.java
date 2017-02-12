@@ -70,7 +70,7 @@ public class Trace extends AppCompatActivity {
 
 
         String path = Environment.getExternalStorageDirectory().getPath();
-        String imageName = (testCount == 1) ? "left.jpg" : "right.jpg";
+        String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
         //File file = new File("/mnt" + path + imageName);
 
         try {
