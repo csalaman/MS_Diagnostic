@@ -3,7 +3,10 @@ package com.cmsc436.ms_diagnostic;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +22,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-
-import static android.os.Environment.DIRECTORY_PICTURES;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class Trace extends AppCompatActivity {
 
@@ -92,22 +92,38 @@ public class Trace extends AppCompatActivity {
         traceView.buildDrawingCache();
         Bitmap bm = traceView.getDrawingCache();
 
+        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        File myDir = new File(root + "/saved_images");
+        String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
+        File file = new File(myDir, imageName);
+
 
 
         //String path = Environment.getExternalStorageDirectory().getPath();
-        String path = getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getPath();
-        String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
+        //String path = getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getPath();
+
         //File file = new File("/mnt" + path + imageName);
 
         try {
             //FileOutputStream outputStream = new FileOutputStream(new File("/mnt" + path + imageName));
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(new File(path + imageName)));
+            FileOutputStream out = new FileOutputStream(file);
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            //bm.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(new File(path + imageName)));
+
             //bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             //outputStream.flush();
             //outputStream.close();
         } catch (FileNotFoundException e) {
             Log.e("File not found", e.toString());
         }
+
+        MediaScannerConnection.scanFile(this, new String[] { file.toString() }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
 
         if(testCount == 1){
             left_h_time = elapsedTime;
