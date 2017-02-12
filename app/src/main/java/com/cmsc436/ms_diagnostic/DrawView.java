@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.RequiresApi;
@@ -159,6 +160,9 @@ public class DrawView extends View {
         }.start();
     }
 
+    public void clearDrawing(){
+        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+    }
 
 
 }
