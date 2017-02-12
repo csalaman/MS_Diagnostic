@@ -11,8 +11,6 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.transition.Explode;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
@@ -101,7 +99,6 @@ public class Trace extends AppCompatActivity {
 
         String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
         File file = new File(myDir, imageName);
-
 
 
 
