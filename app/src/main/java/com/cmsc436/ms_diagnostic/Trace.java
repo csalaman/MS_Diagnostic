@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -112,8 +113,7 @@ public class Trace extends AppCompatActivity {
         timer.stop();
         start_button.setEnabled(true);
         stop_button.setEnabled(false);
-        draw_event.setVisibility(View.GONE);
-        draw_event.clearDrawing();
+
         long elapsedTime = (SystemClock.elapsedRealtime() - timer.getBase() )/1000;
 
         DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
@@ -121,19 +121,21 @@ public class Trace extends AppCompatActivity {
         traceView.buildDrawingCache();
         Bitmap bm = traceView.getDrawingCache();
 
+        /*
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
 
         String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
         File file = new File(myDir, imageName);
-
+*/
 
 
         //String path = Environment.getExternalStorageDirectory().getPath();
         //String path = getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getPath();
 
         //File file = new File("/mnt" + path + imageName);
+        /*
         if (file.exists ()) file.delete ();
         try {
             //FileOutputStream outputStream = new FileOutputStream(new File("/mnt" + path + imageName));
@@ -147,7 +149,8 @@ public class Trace extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             Log.e("File not found", e.toString());
         }
-
+        */
+        /*
         MediaScannerConnection.scanFile(this, new String[] { file.toString() }, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
@@ -155,7 +158,12 @@ public class Trace extends AppCompatActivity {
                         Log.i("ExternalStorage", "-> uri=" + uri);
                     }
                 });
+    */
+        String title = (testCount == 1) ? "left_spiral":"right_spiral";
+        MediaStore.Images.Media.insertImage(getContentResolver(), bm, title , "");
 
+        draw_event.setVisibility(View.GONE);
+        draw_event.clearDrawing();
         if(testCount == 1){
             left_h_time = elapsedTime;
         }else{

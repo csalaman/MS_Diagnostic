@@ -37,7 +37,8 @@
         android:onClick="startTimer"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/timer_object"
-        android:layout_toStartOf="@+id/timer_object" />
+        android:layout_toStartOf="@+id/timer_object"
+        android:background="@color/colorAccent"/>
 
     <Button
         android:text="@string/stop_timer"
@@ -47,7 +48,8 @@
         android:onClick="stopTimer"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/timer_object"
-        android:layout_toEndOf="@+id/timer_object" />
+        android:layout_toEndOf="@+id/timer_object"
+        android:background="@color/colorAccent"/>
 
     <ImageView
 

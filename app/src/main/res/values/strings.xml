@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">MS_Diagnostic</string>
     <string name="tap_button">Tap</string>
-    <string name="to_tap_activity">Start Test</string>
+    <string name="tap_test_text">Tap Test</string>
+    <string name="spiral_test_text">Spiral Test</string>
     <string name="tap_count">Start Tapping!</string>
     <string name="tap_instructions">Start Tapping in: %d</string>
     <string name="tap_hand">Please use: </string>
