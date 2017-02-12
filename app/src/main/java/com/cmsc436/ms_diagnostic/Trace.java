@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Explode;
@@ -79,6 +81,7 @@ public class Trace extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void stopTimer(View view){
         timer.stop();
         start_button.setEnabled(true);
@@ -94,8 +97,11 @@ public class Trace extends AppCompatActivity {
 
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+
         String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
         File file = new File(myDir, imageName);
+
 
 
 
@@ -103,7 +109,7 @@ public class Trace extends AppCompatActivity {
         //String path = getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getPath();
 
         //File file = new File("/mnt" + path + imageName);
-
+        if (file.exists ()) file.delete ();
         try {
             //FileOutputStream outputStream = new FileOutputStream(new File("/mnt" + path + imageName));
             FileOutputStream out = new FileOutputStream(file);
