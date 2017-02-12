@@ -24,19 +24,22 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             >
-            <TextView />
+            <TextView
+                android:text="Right Count: "
+                android:gravity="right"
+                android:padding="3dp"
+                android:textColor="@color/text_color"
+                android:textSize="30dp"
+                />
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="Left"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"/>
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Right"
+                android:text="None"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
+                android:textColor="@color/text_color"
+                android:textSize="30dp"
+                android:id="@+id/tap_count_right"
                 />
 
         </TableRow>
@@ -45,8 +48,11 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal">
             <TextView
-                android:text="Tap Count"
+                android:text="Left Count: "
+                android:gravity="right"
                 android:padding="3dp"
+                android:textColor="@color/text_color"
+                android:textSize="30dp"
                 />
             <TextView
                 android:layout_height="wrap_content"
@@ -55,17 +61,14 @@
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 android:gravity="center"
+                android:textColor="@color/text_color"
+                android:textSize="30dp"
                 android:id="@+id/tap_count_left"/>
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="None"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:id="@+id/tap_count_right"
-                />
+
+
         </TableRow>
 
 
     </TableLayout>
 </RelativeLayout>
+
