@@ -113,7 +113,8 @@ public class Trace extends AppCompatActivity {
         timer.stop();
         start_button.setEnabled(true);
         stop_button.setEnabled(false);
-
+        draw_event.setVisibility(View.GONE);
+        draw_event.clearDrawing();
         long elapsedTime = (SystemClock.elapsedRealtime() - timer.getBase() )/1000;
 
         DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
@@ -164,6 +165,7 @@ public class Trace extends AppCompatActivity {
 
         draw_event.setVisibility(View.GONE);
         draw_event.clearDrawing();
+
         if(testCount == 1){
             left_h_time = elapsedTime;
         }else{
@@ -171,8 +173,8 @@ public class Trace extends AppCompatActivity {
             // Exit transition
             getWindow().setExitTransition(new Fade());
             Intent myIntent = new Intent(this,Results.class);
-            myIntent.putExtra(getString(R.string.LEFT),left_h_time);
-            myIntent.putExtra(getString(R.string.RIGHT),right_h_time);
+            myIntent.putExtra(getString(R.string.LEFT),""+left_h_time);
+            myIntent.putExtra(getString(R.string.RIGHT),""+right_h_time);
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             //startActivity(myIntent);
         }
