@@ -57,8 +57,8 @@ public class TapActivity extends Activity {
                     // when both hands are done, the intent in initialized
                     // both hand data is set in putExtra
                     intent = new Intent(TapActivity.this, Results.class);
-                    intent.putExtra("LEFT",""+leftHand);
-                    intent.putExtra("RIGHT",""+rightHand);
+                    intent.putExtra(getString(R.string.LEFT),""+leftHand);
+                    intent.putExtra(getString(R.string.RIGHT),""+rightHand);
 
                     // The start button's text is changed to "Done"
                     //new listener is added to send to the Result Activity
