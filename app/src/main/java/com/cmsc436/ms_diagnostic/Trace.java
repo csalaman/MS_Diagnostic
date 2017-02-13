@@ -171,8 +171,8 @@ public class Trace extends AppCompatActivity {
             // Exit transition
             getWindow().setExitTransition(new Fade());
             Intent myIntent = new Intent(this,Results.class);
-            myIntent.putExtra(STATE_LH,left_h_time);
-            myIntent.putExtra(STATE_RH,right_h_time);
+            myIntent.putExtra(getString(R.string.LEFT),left_h_time);
+            myIntent.putExtra(getString(R.string.RIGHT),right_h_time);
             startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             //startActivity(myIntent);
         }
