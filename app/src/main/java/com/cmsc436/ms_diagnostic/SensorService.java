@@ -31,6 +31,17 @@ public class SensorService extends Service implements SensorEventListener{
     private float pichAngle;
     private float rollAngle;
     double vo;
+
+
+    //added by Lauren
+    private float timestamp;
+    private static final float NS2S = 1.0f / 1000000000.0f;
+
+    private float[] velocity;
+    private float[] position;
+    private float[] last_values;
+
+
 //    float inclineAngle;
 
     private IBinder binder = new LocalBinder();
@@ -52,6 +63,16 @@ public class SensorService extends Service implements SensorEventListener{
         sensorManager.registerListener(this,magneticFeild,5);
 
         vo = 0.0;
+
+        velocity = new float[3];
+        position = new float[3];
+        last_values = new float[3];
+
+        for (int i = 0; i < 3; i++) {
+            velocity[i] = 0.0f;
+            position[i] = 0.0f;
+        }
+
         return START_STICKY;
     }
 
@@ -59,6 +80,15 @@ public class SensorService extends Service implements SensorEventListener{
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
             accelerationVector = event.values;
+            float dt = (event.timestamp - timestamp) * NS2S; //added by lauren
+
+            for (int i = 0; i < 3; i++) {
+                velocity[i] += (event.values[i] + last_values[i])/2 * dt;
+                position[i] += velocity[i] * dt;
+            }
+
+            System.arraycopy(accelerationVector, 0, last_values, 0, 3);
+            timestamp = event.timestamp;
         }else {
             magneticVector = event.values;
         }
@@ -103,6 +133,6 @@ public class SensorService extends Service implements SensorEventListener{
     public double getXScalar(){
         return Math.tan(rollAngle);
     }
-
+    
 
 }
