@@ -30,7 +30,7 @@ public class SensorService extends Service implements SensorEventListener{
     float [] accelerationVector;
     private float pichAngle;
     private float rollAngle;
-
+    double vo;
 //    float inclineAngle;
 
     private IBinder binder = new LocalBinder();
@@ -51,6 +51,7 @@ public class SensorService extends Service implements SensorEventListener{
         sensorManager.registerListener(this,accelerometer,5);
         sensorManager.registerListener(this,magneticFeild,5);
 
+        vo = 0.0;
         return START_STICKY;
     }
 
