@@ -83,7 +83,8 @@ public class SensorService extends Service implements SensorEventListener{
             float dt = (event.timestamp - timestamp) * NS2S; //added by lauren
 
             for (int i = 0; i < 3; i++) {
-                velocity[i] += (event.values[i] + last_values[i])/2 * dt;
+//                velocity[i] += (accelerationVector[i] + last_values[i])/2 * dt;
+                velocity[i] += accelerationVector[i] * dt;
                 position[i] += velocity[i] * dt;
             }
 
