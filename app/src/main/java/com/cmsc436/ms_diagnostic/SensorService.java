@@ -30,14 +30,13 @@ public class SensorService extends Service implements SensorEventListener{
     float [] accelerationVector;
     private float pichAngle;
     private float rollAngle;
-
+    double vo;
 //    float inclineAngle;
 
     private IBinder binder = new LocalBinder();
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return binder;
     }
 
@@ -52,8 +51,8 @@ public class SensorService extends Service implements SensorEventListener{
         sensorManager.registerListener(this,accelerometer,5);
         sensorManager.registerListener(this,magneticFeild,5);
 
+        vo = 0.0;
         return START_STICKY;
-//        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -96,4 +95,14 @@ public class SensorService extends Service implements SensorEventListener{
     public float getRollAngle(){
         return rollAngle;
     }
+
+    public double getYScalar(){
+        return Math.tan(pichAngle);
+    }
+
+    public double getXScalar(){
+        return Math.tan(rollAngle);
+    }
+
+
 }
