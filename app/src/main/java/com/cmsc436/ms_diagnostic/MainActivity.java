@@ -34,6 +34,10 @@ public class MainActivity extends Activity {
         startActivity(spiral_intent);
     }
 
+    public void startXYZ(View v){
+        startActivity(new Intent(this,Balancer.class));
+    }
+
 
 
 

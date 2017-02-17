@@ -45,5 +45,14 @@
         android:onClick="startSpiralTest"
         />
 
+    <Button
+        android:text="XYZ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_spiral_activity"
+        android:layout_alignStart="@+id/button_spiral_activity"
+        android:id="@+id/button"
+        android:onClick="startXYZ"/>
+
 
 </RelativeLayout>
