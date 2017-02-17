@@ -37,7 +37,6 @@ public class SensorService extends Service implements SensorEventListener{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return binder;
     }
 
@@ -53,7 +52,6 @@ public class SensorService extends Service implements SensorEventListener{
         sensorManager.registerListener(this,magneticFeild,5);
 
         return START_STICKY;
-//        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -96,4 +94,14 @@ public class SensorService extends Service implements SensorEventListener{
     public float getRollAngle(){
         return rollAngle;
     }
+
+    public double getYScalar(){
+        return Math.tan(pichAngle);
+    }
+
+    public double getXScalar(){
+        return Math.tan(rollAngle);
+    }
+
+
 }
