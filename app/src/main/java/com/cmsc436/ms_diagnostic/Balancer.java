@@ -38,6 +38,7 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
     SensorService sensorService;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
