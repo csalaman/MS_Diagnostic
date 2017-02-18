@@ -84,6 +84,7 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
 
     }
 
+
     @Override
     protected void onStop()
     {
