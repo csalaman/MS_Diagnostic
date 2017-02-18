@@ -31,8 +31,8 @@ public class Balancer extends AppCompatActivity {
     int mScrWidth, mScrHeight;
     android.graphics.PointF mBallPos, mBallSpd;
 
-    float X_SCALAR = 5f;
-    float Y_SCALAR = 7f;
+    float X_SCALAR;
+    float Y_SCALAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +41,21 @@ public class Balancer extends AppCompatActivity {
         getWindow().setFlags(0xFFFFFFFF,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(new Circles(this));
+        setContentView(R.layout.activity_balancer);
         //create pointer to main screen
-        final RelativeLayout mainView =
-                (android.widget.RelativeLayout)findViewById(R.id.balance_view);
+        final FrameLayout mainView =
+                (android.widget.FrameLayout)findViewById(R.id.balance_view);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScrWidth = displaymetrics.widthPixels;
         mScrHeight = displaymetrics.heightPixels;
+
+        X_SCALAR = mScrHeight/500f;
+        Y_SCALAR = mScrWidth/200f;
+
+        System.out.println(">>>>>>>>>>> "+mScrHeight);
+        System.out.println("------------------- "+ mScrWidth);
         mBallPos = new android.graphics.PointF();
         mBallSpd = new android.graphics.PointF();
 
