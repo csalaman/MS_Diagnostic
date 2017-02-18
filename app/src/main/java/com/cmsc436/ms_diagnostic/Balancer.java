@@ -28,8 +28,8 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
     TextView y_text;
     TextView z_text;
 
-    public static int x;
-    public static int y;
+    public static double x;
+    public static double y;
 
     CDrawView mCDrawView;
     ShapeDrawable mDraw = new ShapeDrawable();
@@ -68,8 +68,9 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
 
         {
             if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-                x = (int) Math.pow(event.values[0], 2);
-                y = (int) Math.pow(event.values[1], 2);
+                x = ( Math.pow(event.values[0], 3));
+                y = ( Math.pow(event.values[1], 3));
+//
             }
         }
     }
@@ -125,15 +126,17 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
 
             mDraw = new ShapeDrawable(new OvalShape());
             mDraw.getPaint().setColor(0xff74AC23);
-            mDraw.setBounds(x,y,x+width,y+height);
+            mDraw.setBounds((int)x,(int)y,(int)x+width,(int)y+height);
+
         }
 
         protected void onDraw(Canvas canvas){
-            RectF oval = new RectF(Balancer.x,Balancer.y, Balancer.x + width,Balancer.y + height);
+
+            RectF oval = new RectF((float)Balancer.x,(float)Balancer.y, (float)Balancer.x + width ,(float)Balancer.y + height);
             Paint p = new Paint();
             p.setColor(Color.BLUE);
-            canvas.drawColor(Color.BLACK);
-            canvas.drawOval(oval,p);
+            //canvas.drawOval(oval,p);
+            canvas.drawCircle((float)Balancer.x+(getWidth()/2),(float)Balancer.y+((getHeight()/2)),10,p);
 
             invalidate();
         }
