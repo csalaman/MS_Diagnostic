@@ -141,6 +141,7 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
             invalidate();
         }
 
+
     }
 
 }
