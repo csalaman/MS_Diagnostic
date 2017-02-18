@@ -137,7 +137,6 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
             p.setColor(Color.BLUE);
             //canvas.drawOval(oval,p);
             canvas.drawCircle((float)Balancer.x+(getWidth()/2),(float)Balancer.y+((getHeight()/2)),10,p);
-
             invalidate();
         }
 
