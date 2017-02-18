@@ -50,7 +50,6 @@ public class Circles extends View {
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
-        Toast.makeText(getContext(),"Drawing",Toast.LENGTH_LONG).show();
         paint.setStyle(Paint.Style.STROKE);
 
         canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, this.getWidth()/7, paint);

@@ -14,4 +14,5 @@
     <string name="stop_timer">Stop</string>
     <string name="LEFT">LEFT</string>
     <string name="RIGHT">RIGHT</string>
+    <string name="next_hand">Next Hand</string>
 </resources>

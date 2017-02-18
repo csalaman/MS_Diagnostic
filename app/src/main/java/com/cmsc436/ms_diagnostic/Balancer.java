@@ -1,6 +1,7 @@
 package com.cmsc436.ms_diagnostic;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -39,8 +40,13 @@ public class Balancer extends AppCompatActivity {
     float X_SCALAR;
     float Y_SCALAR;
 
-    final Button start_button = (Button) findViewById(R.id.start_button);
-    final TextView timer_view = (TextView) findViewById(R.id.info);
+    final Button start_button = (Button) findViewById(R.id.balance_bottom_button);
+    final TextView timer_view = (TextView) findViewById(R.id.balance_time_text);
+
+    boolean isDone = false;
+
+    double left_score;
+    double right_score;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE); //hide title bar
@@ -81,6 +87,8 @@ public class Balancer extends AppCompatActivity {
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                start_button.setText(R.string.next_hand);
+                start_button.setEnabled(false);
                 recordTimer.start();
             }
         });
@@ -169,6 +177,35 @@ public class Balancer extends AppCompatActivity {
         @Override
         public void onFinish() {
             timer_view.setText("Done!");
+            start_button.setEnabled(true);
+
+            if(isDone){
+                right_score = score;
+                final Intent intent = new Intent(Balancer.this,Results.class);
+                intent.putExtra(getString(R.string.RIGHT),""+right_score);
+                intent.putExtra(getString(R.string.LEFT),""+left_score);
+                start_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(intent);
+                    }
+                });
+            }else {
+                left_score = score;
+                score = 0.0;
+
+                mBallView.mX = mScrWidth/2;
+                mBallView.mY = mScrHeight/2;
+                isDone = true;
+
+                start_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+            }
+
         }
     };
 
