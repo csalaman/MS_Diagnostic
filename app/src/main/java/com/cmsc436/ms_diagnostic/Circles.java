@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.View;
 import android.util.AttributeSet;
+import android.widget.Toast;
 
 /**
  * Khanh N.
@@ -47,12 +48,12 @@ public class Circles extends View {
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
-
+        Toast.makeText(getContext(),"Drawing",Toast.LENGTH_LONG).show();
         paint.setStyle(Paint.Style.STROKE);
 
-        canvas.drawCircle(width/2, height/2, width/3, paint);
-        canvas.drawCircle(width/2, height/2, width * 2/ 3, paint);
-        canvas.drawCircle(width/2, height/2, width, paint);
+        canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, this.getWidth()/7, paint);
+        canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, (this.getWidth() * 2) / 7, paint);
+        canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, (this.getWidth() * 3)/ 7, paint);
 
 
     }
