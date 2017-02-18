@@ -28,8 +28,10 @@ public class SensorService extends Service implements SensorEventListener{
     float [] orientation;
     float [] magneticVector;
     float [] accelerationVector;
-    private float pichAngle;
-    private float rollAngle;
+    private float xzAngle;
+    private float xyAngle;
+    private float yzAngle;
+
     double vo;
 
 
@@ -44,16 +46,17 @@ public class SensorService extends Service implements SensorEventListener{
 
 //    float inclineAngle;
 
-    private IBinder binder = new LocalBinder();
+    public IBinder binder = new LocalBinder();
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
+//        return START_STICKY;
         return binder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -74,6 +77,7 @@ public class SensorService extends Service implements SensorEventListener{
         }
 
         return START_STICKY;
+
     }
 
     @Override
@@ -97,14 +101,15 @@ public class SensorService extends Service implements SensorEventListener{
         if(accelerationVector == null || magneticVector == null) return;
 
         R = new float[9];
-//        I = new float[9];
+        I = new float[9];
 
-        if(!SensorManager.getRotationMatrix(R,null,accelerationVector, magneticVector)) return;
+        if(!SensorManager.getRotationMatrix(R,I,accelerationVector, magneticVector)) return;
 
         orientation = new float[3];
         SensorManager.getOrientation(R,orientation);
-        pichAngle = orientation[1];
-        rollAngle = orientation[2];
+        xzAngle = orientation[0];
+        xyAngle = orientation[1];
+        yzAngle = orientation[2];
 
     }
 
@@ -119,21 +124,27 @@ public class SensorService extends Service implements SensorEventListener{
         }
     }
 
-    public float getPichAngle(){
-        return pichAngle;
+
+    public float getYAngle(){
+        return xyAngle;
     }
 
-    public float getRollAngle(){
-        return rollAngle;
+    public float getxAngle(){
+        return yzAngle;
     }
 
-    public double getYScalar(){
-        return Math.tan(pichAngle);
+    public double getDeltaX(){
+        return Math.tan(yzAngle);
     }
 
-    public double getXScalar(){
-        return Math.tan(rollAngle);
+    public double getDeltaY(){
+        return Math.tan(xyAngle);
     }
-    
+
+
+    public float[] getOrientation(){
+        return orientation;
+    }
+
 
 }

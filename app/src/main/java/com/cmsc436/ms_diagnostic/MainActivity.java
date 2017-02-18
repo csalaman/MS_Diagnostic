@@ -1,12 +1,9 @@
 package com.cmsc436.ms_diagnostic;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Explode;
-import android.transition.Slide;
 import android.view.View;
 import android.view.Window;
 
@@ -38,6 +35,7 @@ public class MainActivity extends Activity {
         Intent circle_intent = new Intent(this, CircleActivity.class);
         startActivity(circle_intent);
     }
+//    public void startBallMover(View v) {startActivity(new Intent(this, Balancer.class));}
 
 
 

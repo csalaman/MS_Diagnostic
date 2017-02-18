@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
     package="com.cmsc436.ms_diagnostic">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -22,8 +20,14 @@
         </activity>
         <activity android:name=".TapActivity" />
         <activity android:name=".Results" />
-        <activity android:name=".Trace"></activity>
-        <activity android:name=".CircleActivity"></activity>
+        <activity android:name=".Trace" />
+        <activity android:name=".Balancer" />
+        <activity android:name=".moveBall" />
+
+        <service
+            android:name=".SensorService"
+            android:enabled="true" />
+
         <activity android:name=".Balancer"></activity>
     </application>
 

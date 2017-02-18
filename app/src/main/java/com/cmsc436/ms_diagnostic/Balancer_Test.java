@@ -16,13 +16,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Balancer extends AppCompatActivity {
+public class Balancer_Test extends AppCompatActivity {
 
     BallView mBallView = null;
     Handler RedrawHandler = new Handler(); //so redraw occurs in main thread
@@ -31,8 +30,8 @@ public class Balancer extends AppCompatActivity {
     int mScrWidth, mScrHeight;
     android.graphics.PointF mBallPos, mBallSpd;
 
-    float X_SCALAR = 5f;
-    float Y_SCALAR = 7f;
+    float X_SCALAR = 2f;
+    float Y_SCALAR = 3f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +40,10 @@ public class Balancer extends AppCompatActivity {
         getWindow().setFlags(0xFFFFFFFF,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        setContentView(new Circles(this));
+        setContentView(R.layout.activity_balancer__test);
         //create pointer to main screen
-        final RelativeLayout mainView =
-                (android.widget.RelativeLayout)findViewById(R.id.balance_view);
+        final FrameLayout mainView =
+                (android.widget.FrameLayout)findViewById(R.id.balance_view);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -60,7 +59,7 @@ public class Balancer extends AppCompatActivity {
         mBallSpd.y = 0;
 
         //create initial ball
-        mBallView = new BallView(this, mBallPos.x, mBallPos.y, mScrWidth/30);
+        mBallView = new BallView(this, mBallPos.x, mBallPos.y, mScrHeight/30);
 
         mainView.addView(mBallView); //add ball to main screen
         mBallView.invalidate(); //call onDraw in BallView
@@ -139,8 +138,8 @@ public class Balancer extends AppCompatActivity {
         //construct new ball object
         public BallView(Context context, float x, float y, int r) {
             super(context);
-
-            mPaint.setColor(Color.RED); // Color setting
+            //color hex is [transparency][red][green][blue]
+            mPaint.setColor(Color.RED); //not transparent. color is green
             this.mX = x;
             this.mY = y;
             this.mR = r; //radius
