@@ -28,9 +28,9 @@ public class SensorService extends Service implements SensorEventListener{
     float [] orientation;
     float [] magneticVector;
     float [] accelerationVector;
-    private float xAngle;
-    private float yAngle;
-    private float zAngle;
+    private float xzAngle;
+    private float xyAngle;
+    private float yzAngle;
 
     double vo;
 
@@ -105,9 +105,9 @@ public class SensorService extends Service implements SensorEventListener{
 
         orientation = new float[3];
         SensorManager.getOrientation(R,orientation);
-        xAngle = orientation[0];
-        yAngle = orientation[1];
-        zAngle = orientation[2];
+        xzAngle = orientation[0];
+        xyAngle = orientation[1];
+        yzAngle = orientation[2];
 
     }
 
@@ -122,25 +122,23 @@ public class SensorService extends Service implements SensorEventListener{
         }
     }
 
+
     public float getYAngle(){
-        return yAngle;
+        return xyAngle;
     }
 
-    public float getXAngle(){
-        return xAngle;
+    public float getxAngle(){
+        return yzAngle;
     }
 
-    public float getZAngle(){
-        return zAngle;
+    public double getDeltaX(){
+        return Math.tan(yzAngle);
     }
 
-    public double getYScalar(){
-        return Math.tan(yAngle);
+    public double getDeltaY(){
+        return Math.tan(xyAngle);
     }
 
-    public double getXScalar(){
-        return Math.tan(zAngle);
-    }
 
     public float[] getOrientation(){
         return orientation;
