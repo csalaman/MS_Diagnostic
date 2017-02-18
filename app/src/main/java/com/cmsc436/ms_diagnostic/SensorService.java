@@ -46,16 +46,17 @@ public class SensorService extends Service implements SensorEventListener{
 
 //    float inclineAngle;
 
-    private IBinder binder = new LocalBinder();
+    public IBinder binder = new LocalBinder();
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+
+//        return START_STICKY;
         return binder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -76,6 +77,7 @@ public class SensorService extends Service implements SensorEventListener{
         }
 
         return START_STICKY;
+
     }
 
     @Override
@@ -99,9 +101,9 @@ public class SensorService extends Service implements SensorEventListener{
         if(accelerationVector == null || magneticVector == null) return;
 
         R = new float[9];
-//        I = new float[9];
+        I = new float[9];
 
-        if(!SensorManager.getRotationMatrix(R,null,accelerationVector, magneticVector)) return;
+        if(!SensorManager.getRotationMatrix(R,I,accelerationVector, magneticVector)) return;
 
         orientation = new float[3];
         SensorManager.getOrientation(R,orientation);

@@ -21,6 +21,13 @@
         <activity android:name=".TapActivity" />
         <activity android:name=".Results" />
         <activity android:name=".Trace" />
+        <activity android:name=".Balancer" />
+        <activity android:name=".moveBall" />
+
+        <service
+            android:name=".SensorService"
+            android:enabled="true" />
+
         <activity android:name=".Balancer"></activity>
     </application>
 

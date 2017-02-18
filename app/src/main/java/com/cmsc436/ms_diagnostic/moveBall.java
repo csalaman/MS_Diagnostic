@@ -12,6 +12,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 public class moveBall extends AppCompatActivity implements SensorEventListener2 {
 
@@ -63,7 +64,9 @@ public class moveBall extends AppCompatActivity implements SensorEventListener2 
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.out.println("in sensor change");
             xAccel = sensorEvent.values[0];
             yAccel = sensorEvent.values[1];
             updateBall();
