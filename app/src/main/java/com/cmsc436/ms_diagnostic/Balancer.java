@@ -59,7 +59,6 @@ public class Balancer extends AppCompatActivity implements SensorEventListener {
     };
 
 
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         x_text.setText("X: " + event.values[0]);
