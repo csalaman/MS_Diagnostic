@@ -46,6 +46,7 @@ public class Balancer extends AppCompatActivity {
         final FrameLayout mainView =
                 (android.widget.FrameLayout)findViewById(R.id.balance_view);
 
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScrWidth = displaymetrics.widthPixels;
