@@ -57,8 +57,8 @@ public class Balancer extends AppCompatActivity {
         mScrWidth = displaymetrics.widthPixels;
         mScrHeight = displaymetrics.heightPixels;
 
-        X_SCALAR = mScrHeight/500f;
-        Y_SCALAR = mScrWidth/200f;
+        X_SCALAR = mScrHeight/700f;
+        Y_SCALAR = mScrWidth/300f;
 
         System.out.println(">>>>>>>>>>> "+mScrHeight);
         System.out.println("------------------- "+ mScrWidth);
