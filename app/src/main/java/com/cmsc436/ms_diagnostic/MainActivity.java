@@ -31,8 +31,9 @@ public class MainActivity extends Activity {
         startActivity(spiral_intent);
     }
 
-    public void startXYZ(View v){
-        startActivity(new Intent(this,Balancer.class));
+    public void Circle_Activity(View view){
+        Intent circle_intent = new Intent(this, CircleActivity.class);
+        startActivity(circle_intent);
     }
 //    public void startBallMover(View v) {startActivity(new Intent(this, Balancer.class));}
 
