@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,6 +29,8 @@ public class Balancer extends AppCompatActivity {
     TimerTask mTsk = null;
     int mScrWidth, mScrHeight;
     android.graphics.PointF mBallPos, mBallSpd;
+
+    double score;
 
     float X_SCALAR;
     float Y_SCALAR;
@@ -72,6 +73,37 @@ public class Balancer extends AppCompatActivity {
         mainView.addView(mBallView); //add ball to main screen
         mBallView.invalidate(); //call onDraw in BallView
 
+        score = 0.0;
+
+        // Starting the sensor handler
+        startSensorHandler();
+
+    }
+
+    @Override
+    public void onPause(){ //app moved to background, stop background threads
+
+        mTmr.cancel(); //kill\release timer (our only background thread)
+        mTmr = null;
+        mTsk = null;
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){ //app moved to foreground (also occurs at app startup)
+
+        startCoordUpdate();
+        super.onResume();
+    } // onResume
+
+
+    @Override
+    public void onDestroy(){ //main thread stopped
+        super.onDestroy();
+        System.runFinalizersOnExit(true); //wait for threads to exit before clearing app
+    }
+
+    private void startSensorHandler(){
         ((SensorManager)getSystemService(Context.SENSOR_SERVICE)).registerListener(
                 new SensorEventListener() {
                     @Override
@@ -89,18 +121,7 @@ public class Balancer extends AppCompatActivity {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    @Override
-    public void onPause(){ //app moved to background, stop background threads
-
-        mTmr.cancel(); //kill\release timer (our only background thread)
-        mTmr = null;
-        mTsk = null;
-        super.onPause();
-    }
-
-    @Override
-    public void onResume(){ //app moved to foreground (also occurs at app startup)
-
+    private void startCoordUpdate(){
         //create timer to move ball to new position
         mTmr = new Timer();
         mTsk = new TimerTask() {
@@ -124,14 +145,6 @@ public class Balancer extends AppCompatActivity {
             }}; // TimerTask
 
         mTmr.schedule(mTsk,10,10); //start timer
-        super.onResume();
-    } // onResume
-
-
-    @Override
-    public void onDestroy(){ //main thread stopped
-        super.onDestroy();
-        System.runFinalizersOnExit(true); //wait for threads to exit before clearing app
     }
 
 
