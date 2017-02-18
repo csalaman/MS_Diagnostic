@@ -46,23 +46,15 @@
         />
 
     <Button
-        android:text="XYZ"
+        android:text="Balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_spiral_activity"
         android:layout_alignStart="@+id/button_spiral_activity"
         android:id="@+id/button"
-        android:onClick="startXYZ"/>
+        android:onClick="startBalancer"/>
 
-    <Button
-        android:text="Ball Activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button"
-        android:layout_alignStart="@+id/button"
-        android:id="@+id/button2"
-        android:onClick="startBallActivity"
-        />
+
 
 
 </RelativeLayout>

@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 public class Circles extends View {
     int width;
-    int height;
+    int height = this.getHeight();
     Paint paint;
     Path path;
 
@@ -42,8 +42,7 @@ public class Circles extends View {
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
 
-        width = this.getWidth();
-        height = this.getHeight();
+
 
     }
 
@@ -54,9 +53,9 @@ public class Circles extends View {
         Toast.makeText(getContext(),"Drawing",Toast.LENGTH_LONG).show();
         paint.setStyle(Paint.Style.STROKE);
 
-        canvas.drawCircle(width/2, height/2, width/7, paint);
-        canvas.drawCircle(width/2, height/2,(width * 2) / 7, paint);
-        canvas.drawCircle(width/2, height/2,(width * 3) / 7, paint);
+        canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, this.getWidth()/7, paint);
+        canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, (this.getWidth() * 2) / 7, paint);
+        canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, (this.getWidth() * 3)/ 7, paint);
 
 
     }
