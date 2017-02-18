@@ -36,6 +36,10 @@ public class MainActivity extends Activity {
     }
 //    public void startBallMover(View v) {startActivity(new Intent(this, Balancer.class));}
 
+    public void startBallActivity(View v) {
+        startActivity(new Intent(this, BallActivity.class));
+    }
+
 
 
 
