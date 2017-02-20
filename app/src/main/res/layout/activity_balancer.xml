@@ -9,25 +9,45 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="4">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:id="@+id/balance_time_text"/>
+            android:id="@+id/balance_time_text"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=""
+            android:id="@+id/balance_text_score"
+            android:textSize="20sp"
+            android:padding="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/hand"
+            android:id="@+id/balance_text_hand"
+            android:textSize="20sp"
+            android:padding="10dp"/>
     </LinearLayout>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:id="@+id/balance_view">
+        android:id="@+id/balance_view"
+        >
 
         <com.cmsc436.ms_diagnostic.Circles
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="393dp"
+            android:id="@+id/balance_circles"/>
+
+
+
     </FrameLayout>
 
     <LinearLayout
@@ -35,13 +55,14 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="3">
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/balance_bottom_button"
-            android:text="@string/start_timer"/>
+            android:text="@string/start_timer"
+            android:background="@color/colorAccent"/>
 
     </LinearLayout>
 

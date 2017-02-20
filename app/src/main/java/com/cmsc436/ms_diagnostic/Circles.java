@@ -60,7 +60,7 @@ public class Circles extends View {
     }
 
     public float getSmallRadius(){
-        return width/7;
+        return getWidth()/7;
     }
 
     public float getMidiumRadius(){

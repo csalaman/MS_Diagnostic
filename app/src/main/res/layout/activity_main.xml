@@ -46,12 +46,14 @@
         />
 
     <Button
-        android:text="Balance"
+        android:text="@string/balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:id="@+id/button_balance_activity"
         android:layout_below="@+id/button_spiral_activity"
-        android:layout_alignStart="@+id/button_spiral_activity"
-        android:id="@+id/button"
+        android:layout_alignStart="@+id/button_tap_activity"
+        android:layout_marginTop="12dp"
         android:onClick="startBalancer"/>
 
 

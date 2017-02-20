@@ -1,5 +1,6 @@
 package com.cmsc436.ms_diagnostic;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -9,10 +10,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.icu.text.DecimalFormat;
+import android.icu.text.NumberFormat;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -26,27 +32,37 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Balancer extends AppCompatActivity {
+public class Balancer extends Activity {
+
+    int INNER_CIRCLE = 100;
+    int MID_CIRCLE = 66;
+    int OUT_CIRCLE = 33;
+    int NEG_CIR = -15;
 
     BallView mBallView = null;
+    Circles circles = null;
     Handler RedrawHandler = new Handler(); //so redraw occurs in main thread
     Timer mTmr = null;
     TimerTask mTsk = null;
     int mScrWidth, mScrHeight;
-    android.graphics.PointF mBallPos, mBallSpd;
+    android.graphics.PointF mBallPos, mBallSpd,mCentPos;
 
     double score;
 
     float X_SCALAR;
     float Y_SCALAR;
 
-    final Button start_button = (Button) findViewById(R.id.balance_bottom_button);
-    final TextView timer_view = (TextView) findViewById(R.id.balance_time_text);
+    Button start_button;
+    TextView timer_view;
+    TextView score_text;
+    TextView hand_text;
 
     boolean isDone = false;
+    NumberFormat format;
 
     double left_score;
     double right_score;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE); //hide title bar
@@ -55,6 +71,13 @@ public class Balancer extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balancer);
+
+        start_button = (Button) findViewById(R.id.balance_bottom_button);
+        timer_view = (TextView) findViewById(R.id.balance_time_text);
+        score_text = (TextView) findViewById(R.id.balance_text_score);
+        hand_text = (TextView) findViewById(R.id.balance_text_hand);
+
+        hand_text.append(" " + getString(R.string.LEFT));
         //create pointer to main screen
         final FrameLayout mainView =
                 (android.widget.FrameLayout)findViewById(R.id.balance_view);
@@ -63,7 +86,7 @@ public class Balancer extends AppCompatActivity {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScrWidth = displaymetrics.widthPixels;
-        mScrHeight = displaymetrics.heightPixels;
+        mScrHeight = (int) (displaymetrics.heightPixels * .70);
 
         X_SCALAR = mScrHeight/700f;
         Y_SCALAR = mScrWidth/300f;
@@ -72,47 +95,50 @@ public class Balancer extends AppCompatActivity {
         System.out.println("------------------- "+ mScrWidth);
         mBallPos = new android.graphics.PointF();
         mBallSpd = new android.graphics.PointF();
+        mCentPos = new android.graphics.PointF();
 
         //create variables for ball position and speed
         mBallPos.x = mScrWidth/2;
         mBallPos.y = mScrHeight/2;
+        mCentPos.x = mScrWidth/2;
+        mCentPos.y = mScrHeight/2;
         mBallSpd.x = 0;
         mBallSpd.y = 0;
 
+        circles = (Circles) findViewById(R.id.balance_circles);
         //create initial ball
         mBallView = new BallView(this, mBallPos.x, mBallPos.y, mScrWidth/30);
-
-        mainView.addView(mBallView); //add ball to main screen
+        mBallView.setLayoutParams(new FrameLayout.LayoutParams(mScrWidth, mScrHeight));
+//        mainView.addView(mBallView); //add ball to main screen
+        mainView.addView(mBallView);
+//        mainView.addView(circles);
         mBallView.invalidate(); //call onDraw in BallView
+
+        score = 0.0;
+        format = new DecimalFormat("#0.000");
+        // Starting the sensor handler
+        startSensorHandler();
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 start_button.setText(R.string.next_hand);
+                startCoordUpdate(true);
                 start_button.setEnabled(false);
                 recordTimer.start();
             }
         });
-
-        score = 0.0;
-
-        // Starting the sensor handler
-        startSensorHandler();
-
     }
 
     @Override
     public void onPause(){ //app moved to background, stop background threads
 
-        mTmr.cancel(); //kill\release timer (our only background thread)
-        mTmr = null;
-        mTsk = null;
+        startCoordUpdate(false);
         super.onPause();
     }
 
     @Override
     public void onResume(){ //app moved to foreground (also occurs at app startup)
 
-        startCoordUpdate();
         super.onResume();
     } // onResume
 
@@ -141,10 +167,23 @@ public class Balancer extends AppCompatActivity {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private void startCoordUpdate(){
-        //create timer to move ball to new position
+    private double getScore(float x, float y){
+        double dist = Math.sqrt(Math.pow(mCentPos.x - x,2) + Math.pow(mCentPos.y - y, 2));
+
+        if(dist < circles.getSmallRadius()){
+            return (.01 * INNER_CIRCLE);
+        }else if(dist < circles.getMidiumRadius()){
+            return .01 * MID_CIRCLE;
+        }else if(dist < circles.getLargeRadius()){
+            return .01 * OUT_CIRCLE;
+        }else{
+            return .01 * NEG_CIR;
+        }
+    }
+    private void startCoordUpdate(boolean start){
         mTmr = new Timer();
         mTsk = new TimerTask() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             public void run() {
                 //move ball based on current speed
                 mBallPos.x += mBallSpd.x * X_SCALAR;
@@ -157,6 +196,11 @@ public class Balancer extends AppCompatActivity {
                 //update ball class instance
                 mBallView.mX = mBallPos.x;
                 mBallView.mY = mBallPos.y;
+                score += getScore(mBallPos.x,mBallPos.y);
+
+//                TODO: ONLY THE ORIGNAL THREAD THAT CREATED A VIEW HIERARCHY CAN TOUCH ITS VIEWS
+//                score_text.append(""+format.format(score));
+
                 //redraw ball. Must run in background thread to prevent thread lock.
                 RedrawHandler.post(new Runnable() {
                     public void run() {
@@ -164,26 +208,40 @@ public class Balancer extends AppCompatActivity {
                     }});
             }}; // TimerTask
 
-        mTmr.schedule(mTsk,10,10); //start timer
+        mBallView.mX = mCentPos.x;
+        mBallView.mY = mCentPos.y;
+        if(start){
+            //create timer to move ball to new position
+//            mTmr = new Timer();
+            mTmr.schedule(mTsk,10,10); //start timer
+        }
+
+        else{
+            mTmr.cancel(); //kill\release timer (our only background thread)
+            mTmr = null;
+            mTsk = null;
+        }
     }
 
-    final CountDownTimer recordTimer = new CountDownTimer(30000, 1000) {
+    final CountDownTimer recordTimer = new CountDownTimer(10000, 1000) {
 
         @Override
         public void onTick(long millisUntilFinished) {
             timer_view.setText("Timer: " + (int) millisUntilFinished / 1000 + " sec");
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onFinish() {
-            timer_view.setText("Done!");
+            timer_view.setText("");
             start_button.setEnabled(true);
 
             if(isDone){
+                score_text.setText("Score: "+ format.format(score));
                 right_score = score;
                 final Intent intent = new Intent(Balancer.this,Results.class);
-                intent.putExtra(getString(R.string.RIGHT),""+right_score);
-                intent.putExtra(getString(R.string.LEFT),""+left_score);
+                intent.putExtra(getString(R.string.RIGHT),""+format.format(right_score));
+                intent.putExtra(getString(R.string.LEFT),""+format.format(left_score));
                 start_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -191,9 +249,11 @@ public class Balancer extends AppCompatActivity {
                     }
                 });
             }else {
+                score_text.setText("Score: "+ format.format(score));
+                hand_text.setText(getString(R.string.hand)+getString(R.string.RIGHT));
                 left_score = score;
                 score = 0.0;
-
+                startCoordUpdate(false);
                 mBallView.mX = mScrWidth/2;
                 mBallView.mY = mScrHeight/2;
                 isDone = true;
@@ -201,7 +261,9 @@ public class Balancer extends AppCompatActivity {
                 start_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        score_text.setText("");
+                        recordTimer.start();
+                        startCoordUpdate(true);
                     }
                 });
             }
@@ -229,6 +291,8 @@ public class Balancer extends AppCompatActivity {
             this.mR = r; //radius
 
         }
+
+
 
         //called by invalidate()
         @Override

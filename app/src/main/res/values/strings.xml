@@ -15,4 +15,7 @@
     <string name="LEFT">LEFT</string>
     <string name="RIGHT">RIGHT</string>
     <string name="next_hand">Next Hand</string>
+    <string name="balancer_text_score">Score:</string>
+    <string name="hand">Hand:</string>
+    <string name="balance">Balance</string>
 </resources>
