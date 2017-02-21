@@ -3,9 +3,11 @@ package com.cmsc436.ms_diagnostic;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -167,19 +169,6 @@ public class Balancer extends Activity {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private double getScore(float x, float y){
-        double dist = Math.sqrt(Math.pow(mCentPos.x - x,2) + Math.pow(mCentPos.y - y, 2));
-
-        if(dist < circles.getSmallRadius()){
-            return (.01 * INNER_CIRCLE);
-        }else if(dist < circles.getMidiumRadius()){
-            return .01 * MID_CIRCLE;
-        }else if(dist < circles.getLargeRadius()){
-            return .01 * OUT_CIRCLE;
-        }else{
-            return .01 * NEG_CIR;
-        }
-    }
     private void startCoordUpdate(boolean start){
         mTmr = new Timer();
         mTsk = new TimerTask() {
@@ -193,6 +182,8 @@ public class Balancer extends Activity {
                 if (mBallPos.y > mScrHeight -  (mScrHeight * .1f)) mBallPos.y=mScrHeight - (mScrHeight * .1f);
                 if (mBallPos.x < 0) mBallPos.x=0;
                 if (mBallPos.y < 0) mBallPos.y=0;
+
+//                mBallView.drawPath.moveTo(mBallPos.x,mBallPos.y);
                 //update ball class instance
                 mBallView.mX = mBallPos.x;
                 mBallView.mY = mBallPos.y;
@@ -222,7 +213,19 @@ public class Balancer extends Activity {
             mTsk = null;
         }
     }
+    private double getScore(float x, float y){
+        double dist = Math.sqrt(Math.pow(mCentPos.x - x,2) + Math.pow(mCentPos.y - y, 2));
 
+        if(dist < circles.getSmallRadius()){
+            return (.01 * INNER_CIRCLE);
+        }else if(dist < circles.getMidiumRadius()){
+            return .01 * MID_CIRCLE;
+        }else if(dist < circles.getLargeRadius()){
+            return .01 * OUT_CIRCLE;
+        }else{
+            return .01 * NEG_CIR;
+        }
+    }
     final CountDownTimer recordTimer = new CountDownTimer(10000, 1000) {
 
         @Override
@@ -280,6 +283,13 @@ public class Balancer extends Activity {
         private final int mR;
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        private Path drawPath;
+        private Paint canvasPaint ;
+        private Paint drawPaint;
+        private int paintColor = 0xFF660000;
+        private Canvas drawCanvas;
+        private Bitmap canvasBitmap;
+
 
         //construct new ball object
         public BallView(Context context, float x, float y, int r) {
@@ -290,15 +300,36 @@ public class Balancer extends Activity {
             this.mY = y;
             this.mR = r; //radius
 
+            drawPath = new Path();
+            drawPaint = new Paint();
+            drawPaint.setColor(paintColor);
+            drawPaint.setAntiAlias(true);
+            drawPaint.setStrokeWidth(20);
+            drawPaint.setStyle(Paint.Style.STROKE);
+            drawPaint.setStrokeJoin(Paint.Join.ROUND);
+            drawPaint.setStrokeCap(Paint.Cap.ROUND);
+//            drawPaint.setAlpha(125);
+            canvasPaint = new Paint(Paint.DITHER_FLAG);
+
+            drawPath.moveTo(mX,mY);
+
         }
 
-
+        @Override
+        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+            super.onSizeChanged(w, h, oldw, oldh);
+            canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            drawCanvas = new Canvas(canvasBitmap);
+        }
 
         //called by invalidate()
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
             canvas.drawCircle(mX , mY, mR, mPaint);
+            drawPath.moveTo(mX,mY);
+            canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+            canvas.drawPath(drawPath, drawPaint);
         }
     }
 }
