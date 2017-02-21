@@ -113,8 +113,6 @@ public class Trace extends AppCompatActivity {
         timer.stop();
         start_button.setEnabled(true);
         stop_button.setEnabled(false);
-        draw_event.setVisibility(View.GONE);
-        draw_event.clearDrawing();
         long elapsedTime = (SystemClock.elapsedRealtime() - timer.getBase() )/1000;
 
         DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
