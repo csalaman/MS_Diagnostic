@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -64,6 +65,8 @@ public class Balancer extends Activity {
 
     double left_score;
     double right_score;
+
+    DrawPath drawPath;
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +114,11 @@ public class Balancer extends Activity {
         //create initial ball
         mBallView = new BallView(this, mBallPos.x, mBallPos.y, mScrWidth/30);
         mBallView.setLayoutParams(new FrameLayout.LayoutParams(mScrWidth, mScrHeight));
+        drawPath = new DrawPath(this);
+        drawPath.setLayoutParams(new FrameLayout.LayoutParams(mScrWidth, mScrHeight));
 //        mainView.addView(mBallView); //add ball to main screen
-        mainView.addView(mBallView);
+        mainView.addView(mBallView,1);
+        mainView.addView(drawPath,2);
 //        mainView.addView(circles);
         mBallView.invalidate(); //call onDraw in BallView
 
@@ -182,8 +188,6 @@ public class Balancer extends Activity {
                 if (mBallPos.y > mScrHeight -  (mScrHeight * .1f)) mBallPos.y=mScrHeight - (mScrHeight * .1f);
                 if (mBallPos.x < 0) mBallPos.x=0;
                 if (mBallPos.y < 0) mBallPos.y=0;
-
-//                mBallView.drawPath.moveTo(mBallPos.x,mBallPos.y);
                 //update ball class instance
                 mBallView.mX = mBallPos.x;
                 mBallView.mY = mBallPos.y;
@@ -196,6 +200,7 @@ public class Balancer extends Activity {
                 RedrawHandler.post(new Runnable() {
                     public void run() {
                         mBallView.invalidate();
+                        drawPath.onCoordUpdate(mBallView.mX,mBallView.mY);
                     }});
             }}; // TimerTask
 
@@ -283,13 +288,6 @@ public class Balancer extends Activity {
         private final int mR;
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        private Path drawPath;
-        private Paint canvasPaint ;
-        private Paint drawPaint;
-        private int paintColor = 0xFF660000;
-        private Canvas drawCanvas;
-        private Bitmap canvasBitmap;
-
 
         //construct new ball object
         public BallView(Context context, float x, float y, int r) {
@@ -300,19 +298,58 @@ public class Balancer extends Activity {
             this.mY = y;
             this.mR = r; //radius
 
-            drawPath = new Path();
-            drawPaint = new Paint();
-            drawPaint.setColor(paintColor);
-            drawPaint.setAntiAlias(true);
-            drawPaint.setStrokeWidth(20);
-            drawPaint.setStyle(Paint.Style.STROKE);
-            drawPaint.setStrokeJoin(Paint.Join.ROUND);
-            drawPaint.setStrokeCap(Paint.Cap.ROUND);
-//            drawPaint.setAlpha(125);
-            canvasPaint = new Paint(Paint.DITHER_FLAG);
+        }
 
-            drawPath.moveTo(mX,mY);
 
+
+        //called by invalidate()
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            canvas.drawCircle(mX , mY, mR, mPaint);
+        }
+    }
+
+    public class DrawPath extends View{
+        //drawing path
+        private Path drawPath;
+
+        //defines what to draw
+        private Paint canvasPaint ;
+
+        //defines how to draw
+        private Paint drawPaint;
+
+        //initial color
+        private int paintColor = 0xFF660000;
+
+        //canvas - holding pen, holds your drawings and transfers them to the view
+        private Canvas drawCanvas;
+
+        //canvas bitmap
+        private Bitmap canvasBitmap;
+
+
+
+
+        public DrawPath(Context context) {
+            super(context);
+            init();
+        }
+
+        public DrawPath(Context context, AttributeSet attrs) {
+            super(context, attrs);
+            init();
+        }
+
+        public DrawPath(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+            init();
+        }
+
+        public DrawPath(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+            init();
         }
 
         @Override
@@ -322,14 +359,36 @@ public class Balancer extends Activity {
             drawCanvas = new Canvas(canvasBitmap);
         }
 
-        //called by invalidate()
+        private void init(){
+            drawPath = new Path();
+            drawPaint = new Paint();
+            drawPaint.setColor(paintColor);
+            drawPaint.setAntiAlias(true);
+            drawPaint.setStrokeWidth(20);
+            drawPaint.setStyle(Paint.Style.STROKE);
+            drawPaint.setStrokeJoin(Paint.Join.ROUND);
+            drawPaint.setStrokeCap(Paint.Cap.ROUND);
+            drawPaint.setAlpha(125);
+            canvasPaint = new Paint(Paint.DITHER_FLAG);
+
+            drawPath.moveTo(mCentPos.x,mCentPos.y);
+        }
+
         @Override
         protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            canvas.drawCircle(mX , mY, mR, mPaint);
-            drawPath.moveTo(mX,mY);
             canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
             canvas.drawPath(drawPath, drawPaint);
         }
+
+        public void onCoordUpdate(float x, float y){
+            drawPath.lineTo(x,y);
+            invalidate();
+        }
+//        @Override
+//        public boolean onGenericMotionEvent(MotionEvent event) {
+//            drawPath.lineTo(event.getX(),event.getY());
+//            invalidate();
+//            return true;
+//        }
     }
 }
