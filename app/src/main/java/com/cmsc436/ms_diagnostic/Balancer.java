@@ -3,6 +3,7 @@ package com.cmsc436.ms_diagnostic;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -20,6 +21,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -78,6 +81,33 @@ public class Balancer extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balancer);
+
+        if (ContextCompat.checkSelfPermission(Balancer.this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(Balancer.this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(Balancer.this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+
+        }
 
         start_button = (Button) findViewById(R.id.balance_bottom_button);
         timer_view = (TextView) findViewById(R.id.balance_time_text);
@@ -246,11 +276,20 @@ public class Balancer extends Activity {
             timer_view.setText("");
             start_button.setEnabled(true);
 
-
-
+            startCoordUpdate(false);
 
 
             if(isDone){
+                drawPath.setDrawingCacheEnabled(true);
+                drawPath.buildDrawingCache();
+                Bitmap bm = drawPath.getDrawingCache();
+
+                //String title = (testCount == 1) ? "left_spiral_2":"right_spiral_2";
+                MediaStore.Images.Media.insertImage(getContentResolver(), bm, "PAth_of_draw_2" , "");
+
+                //drawPath.setVisibility(View.GONE);
+                drawPath.clearDrawing();
+
                 score_text.setText("Score: "+ format.format(score));
                 right_score = score;
                 final Intent intent = new Intent(Balancer.this,Results.class);
@@ -268,9 +307,9 @@ public class Balancer extends Activity {
                 Bitmap bm = drawPath.getDrawingCache();
 
                 //String title = (testCount == 1) ? "left_spiral_2":"right_spiral_2";
-                MediaStore.Images.Media.insertImage(getContentResolver(), bm, "PAth_of_draw" , "");
+                MediaStore.Images.Media.insertImage(getContentResolver(), bm, "PAth_of_draw_1" , "");
 
-                drawPath.setVisibility(View.GONE);
+                //drawPath.setVisibility(View.GONE);
                 drawPath.clearDrawing();
 
 
@@ -286,6 +325,9 @@ public class Balancer extends Activity {
                 start_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        System.out.println("ONCLICK IS CALLED");
+                        drawPath.clearDrawing();
+                        drawPath.setVisibility(View.VISIBLE);
                         score_text.setText("");
                         recordTimer.start();
                         startCoordUpdate(true);
@@ -414,6 +456,7 @@ public class Balancer extends Activity {
 //        }
 
         public void clearDrawing(){
+            init();
             drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         }
 
