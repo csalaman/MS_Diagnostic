@@ -42,8 +42,6 @@ public class Circles extends View {
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
 
-
-
     }
 
     @Override
