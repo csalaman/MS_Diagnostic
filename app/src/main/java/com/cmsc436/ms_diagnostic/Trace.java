@@ -158,7 +158,7 @@ public class Trace extends AppCompatActivity {
                     }
                 });
     */
-        String title = (testCount == 1) ? "left_spiral":"right_spiral";
+        String title = (testCount == 1) ? "left_spiral_2":"right_spiral_2";
         MediaStore.Images.Media.insertImage(getContentResolver(), bm, title , "");
 
         draw_event.setVisibility(View.GONE);
