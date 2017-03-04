@@ -142,7 +142,7 @@ public class SensorService extends Service implements SensorEventListener{
     }
 
 
-    public float[] getOrientation(){
+    public float[] getOrientation() {
         return orientation;
     }
 

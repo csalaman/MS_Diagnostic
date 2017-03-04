@@ -4,8 +4,11 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -13,11 +16,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 public class Trace extends AppCompatActivity {
 
@@ -105,7 +113,6 @@ public class Trace extends AppCompatActivity {
         timer.stop();
         start_button.setEnabled(true);
         stop_button.setEnabled(false);
-
         long elapsedTime = (SystemClock.elapsedRealtime() - timer.getBase() )/1000;
 
         DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
@@ -157,8 +164,6 @@ public class Trace extends AppCompatActivity {
         draw_event.setVisibility(View.GONE);
         draw_event.clearDrawing();
 
-        draw_event.setVisibility(View.GONE);
-        draw_event.clearDrawing();
         if(testCount == 1){
             left_h_time = elapsedTime;
         }else{

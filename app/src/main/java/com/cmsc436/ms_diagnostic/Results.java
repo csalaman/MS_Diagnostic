@@ -1,7 +1,6 @@
 package com.cmsc436.ms_diagnostic;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.TextView;
