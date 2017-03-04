@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TapActivity" />
+        <activity android:name=".tap_test.TapActivity" />
         <activity android:name=".Results" />
         <activity android:name=".Trace" />
         <activity android:name=".Balancer" />
@@ -28,7 +28,8 @@
             android:name=".SensorService"
             android:enabled="true" />
 
-        <activity android:name=".Balancer"></activity>
+        <activity android:name=".tap_check_test.TappingTest" />
+        <activity android:name=".tap_check_test.TappingInstr"></activity>
     </application>
 
 </manifest>

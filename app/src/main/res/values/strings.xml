@@ -18,4 +18,7 @@
     <string name="balancer_text_score">Score:</string>
     <string name="hand">Hand:</string>
     <string name="balance">Balance</string>
+    <string name="tap_instr_text">This is the tapping test\nThe tapping test will be a sequence of 3 test per hand\n\nSelect a hand to start:</string>
+    <string name="left_hand_button">Left\nHand</string>
+    <string name="right_hand_button">Right\nHand</string>
 </resources>
