@@ -35,6 +35,10 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this,Balancer.class);
         startActivity(intent);
     }
+    public void startBubble(View v){
+        Intent intent = new Intent(this,BubbleActivity.class);
+        startActivity(intent);
+    }
 
 //    public void Circle_Activity(View view){
 //        Intent circle_intent = new Intent(this, CircleActivity.class);

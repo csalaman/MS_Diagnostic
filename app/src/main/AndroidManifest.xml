@@ -28,7 +28,8 @@
             android:name=".SensorService"
             android:enabled="true" />
 
-        <activity android:name=".Balancer"></activity>
+        <activity android:name=".Balancer" />
+        <activity android:name=".BubbleActivity"></activity>
     </application>
 
 </manifest>

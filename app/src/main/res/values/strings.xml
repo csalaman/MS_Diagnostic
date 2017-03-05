@@ -18,4 +18,5 @@
     <string name="balancer_text_score">Score:</string>
     <string name="hand">Hand:</string>
     <string name="balance">Balance</string>
+    <string name="title_activity_bubble">BubbleActivity</string>
 </resources>
