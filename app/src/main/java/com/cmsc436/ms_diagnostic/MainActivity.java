@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.Window;
 
 import com.cmsc436.ms_diagnostic.tap_check_test.TappingInstr;
-import com.cmsc436.ms_diagnostic.tap_check_test.TappingTest;
-import com.cmsc436.ms_diagnostic.tap_test.TapActivity;
 
 public class MainActivity extends Activity {
 
@@ -39,6 +37,11 @@ public class MainActivity extends Activity {
 
     public void startBalancer(View v){
         Intent intent = new Intent(this,Balancer.class);
+        startActivity(intent);
+    }
+
+    public void startBubble(View v) {
+        Intent intent = new Intent(this, BubbleActivity.class);
         startActivity(intent);
     }
 
