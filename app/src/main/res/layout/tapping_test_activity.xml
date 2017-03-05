@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_tapping_test"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.cmsc436.ms_diagnostic.tap_check_test.TappingTest">
+
+
+
+    <Button
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tap_imgbutton"
+        android:background="@drawable/button_to_tap_img_black"
+        />
+
+    <Button
+        android:text="@string/start_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/start_test_button"
+        android:onClick="startTest"
+        android:layout_alignEnd="@+id/tap_imgbutton"
+        android:layout_alignStart="@+id/tap_imgbutton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/display_text"
+        android:textSize="20dp"
+        />
+
+
+</RelativeLayout>

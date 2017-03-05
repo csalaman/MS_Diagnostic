@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_tap"
     android:layout_width="match_parent"
@@ -8,39 +9,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cmsc436.ms_diagnostic.TapActivity"
+    tools:context="com.cmsc436.ms_diagnostic.tap_test.TapActivity"
     android:background="@color/colorPrimary">
 
     <Button
-        android:text="@string/tap_button"
-        android:textSize="80dp"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/button_tap"
-        android:textColor="@color/text_color"
         style="@style/Widget.AppCompat.Button"
-        android:background="@color/colorAccent"/>
+        android:id="@+id/button_tap"
+        android:background="@drawable/button_to_tap_img_black"
+    />
 
-    <!--<TextView-->
-        <!--android:text = "@string/tap_count"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginBottom="74dp"-->
-        <!--android:id="@+id/tap_count" />-->
-
-    <!--<TextView-->
-        <!--android:text="TextView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignLeft="@+id/button_tap"-->
-        <!--android:layout_alignStart="@+id/button_tap"-->
-        <!--android:layout_marginTop="34dp"-->
-        <!--android:id="@+id/tap_hands" />-->
 
     <Button
         android:text="Start"
@@ -51,7 +32,9 @@
         android:layout_marginTop="17dp"
         android:background="#00cc00"
         android:textColor="@color/text_color"
-        android:id="@+id/start_button" />
+        android:id="@+id/start_button"
+        android:onClick="startTest"
+        />
 
     <TextView
         android:textColor="@color/text_color"
@@ -74,6 +57,8 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/tap_hand_text"
         />
+
+
 
 
 </RelativeLayout>

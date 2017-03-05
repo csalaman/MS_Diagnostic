@@ -4,6 +4,9 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +24,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -101,11 +106,7 @@ public class Trace extends AppCompatActivity {
         start_button.setEnabled(false);
         stop_button.setEnabled(true);
         draw_event.setVisibility(View.VISIBLE);
-
-
-
-
-
+        
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -115,16 +116,25 @@ public class Trace extends AppCompatActivity {
         stop_button.setEnabled(false);
         long elapsedTime = (SystemClock.elapsedRealtime() - timer.getBase() )/1000;
 
-        DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
-        traceView.setDrawingCacheEnabled(true);
-        traceView.buildDrawingCache();
-        Bitmap bm = traceView.getDrawingCache();
+//        DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
+//        traceView.setDrawingCacheEnabled(true);
+//        traceView.buildDrawingCache();
+//        Bitmap bm = traceView.getDrawingCache();
+
+        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_trace);
+//        final RelativeLayout relativeLayout = (RelativeLayout) getWindow().getDecorView().getRootView();
+        relativeLayout.setDrawingCacheEnabled(true);
+        relativeLayout.buildDrawingCache();
+        Bitmap backLayer = relativeLayout.getDrawingCache();
+
+        Bitmap finalBM = finalBitmap(backLayer);
+
+//        Bitmap finalPic = overlayBitmap(bm, backLayer);
 
         /*
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
-
         String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
         File file = new File(myDir, imageName);
 */
@@ -141,7 +151,6 @@ public class Trace extends AppCompatActivity {
             FileOutputStream out = new FileOutputStream(file);
             bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             //bm.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(new File(path + imageName)));
-
             //bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             //outputStream.flush();
             //outputStream.close();
@@ -159,7 +168,9 @@ public class Trace extends AppCompatActivity {
                 });
     */
         String title = (testCount == 1) ? "left_spiral":"right_spiral";
-        MediaStore.Images.Media.insertImage(getContentResolver(), bm, title , "");
+        String s = MediaStore.Images.Media.insertImage(getContentResolver(), finalBM, title , "");
+
+        System.out.println("RETURNED STRTING - "+s);
 
         draw_event.setVisibility(View.GONE);
         draw_event.clearDrawing();
@@ -181,6 +192,15 @@ public class Trace extends AppCompatActivity {
 
         Toast.makeText(this, "Ellapsed Time: " + elapsedTime +" seconds.", Toast.LENGTH_LONG).show();
 
+    }
+
+    private Bitmap finalBitmap(Bitmap b1){
+        Bitmap overlay = Bitmap.createBitmap(b1.getWidth(),b1.getHeight(), b1.getConfig());
+        Canvas canvas = new Canvas(overlay);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(b1,0,0,null);
+
+        return overlay;
     }
 
 }

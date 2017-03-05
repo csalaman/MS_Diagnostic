@@ -1,14 +1,18 @@
-package com.cmsc436.ms_diagnostic;
+package com.cmsc436.ms_diagnostic.tap_test;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.cmsc436.ms_diagnostic.R;
+import com.cmsc436.ms_diagnostic.Results;
 
 /*
 * This is the Activity for the Tapping Test
@@ -18,16 +22,15 @@ public class TapActivity extends Activity {
     int count = 0;
     int rightHand = 0;
     int leftHand = 0;
-    //TextView text;
+
     TextView instructions;
     TextView hand;
-
-
     CountDownTimer recordTimer;
     Boolean isDone = false;
     Button tap_button ;
     Button start_button;
     Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,28 +87,42 @@ public class TapActivity extends Activity {
 
         };
 
-
         start_button.setOnClickListener(new View.OnClickListener(){
-
+//
             @Override
             public void onClick(View v){
                 recordTimer.start();
                 count = 0;
                 start_button.setVisibility(View.INVISIBLE);
-                tap_button.setOnClickListener(new View.OnClickListener() {
+                tap_button.setOnTouchListener(new View.OnTouchListener() {
                     int count_taps = 0;
 
-                    public void onClick(View v2) {
-                        // Perform action on click
-                        count_taps++;
-                        count = count_taps;
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                // PRESSED
+                                count_taps++;
+                                count = count_taps;
+                                tap_button.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_to_tap_imt_white));
+                                return true; // if you want to handle the touch event
+                            case MotionEvent.ACTION_UP:
+                                // RELEASED
+                                tap_button.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_to_tap_img_black));
+                                return true; // if you want to handle the touch event
+                        }
+                        return false;
                     }
                 });
-
             }
 
+
+
+
+
+
         });
-
-
     }
+
+
 }
