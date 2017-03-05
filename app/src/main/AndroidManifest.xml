@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cmsc436.ms_diagnostic">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -18,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TapActivity" />
+        <activity android:name=".tap_test.TapActivity" />
         <activity android:name=".Results" />
         <activity android:name=".Trace" />
         <activity android:name=".Balancer" />
@@ -28,7 +31,10 @@
             android:name=".SensorService"
             android:enabled="true" />
 
-        <activity android:name=".Balancer"></activity>
+
+        <activity android:name=".TestGoogleAPI"></activity>
+        <activity android:name=".tap_check_test.TappingTest" />
+        <activity android:name=".tap_check_test.TappingInstr"></activity>
     </application>
 
 </manifest>

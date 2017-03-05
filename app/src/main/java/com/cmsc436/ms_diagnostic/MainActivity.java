@@ -7,6 +7,10 @@ import android.transition.Explode;
 import android.view.View;
 import android.view.Window;
 
+import com.cmsc436.ms_diagnostic.tap_check_test.TappingInstr;
+import com.cmsc436.ms_diagnostic.tap_check_test.TappingTest;
+import com.cmsc436.ms_diagnostic.tap_test.TapActivity;
+
 public class MainActivity extends Activity {
 
     @Override
@@ -21,10 +25,12 @@ public class MainActivity extends Activity {
     // changes
     public void toTapActivity(View view){
 
-        startActivity(new Intent(MainActivity.this,TapActivity.class));
+       // startActivity(new Intent(MainActivity.this,TapActivity.class));
+        startActivity(new Intent(MainActivity.this,TappingInstr.class));
 
 
     }
+
 
     public void startSpiralTest(View v){
         Intent spiral_intent = new Intent(this,Trace.class);
