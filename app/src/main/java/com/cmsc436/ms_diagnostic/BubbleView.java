@@ -23,8 +23,6 @@ public class BubbleView extends View{
 
     static int r = 0, g = 0, b = 0;
     static int x, y;
-    /*int x = this.getWidth()/2;
-    int y = this.getHeight()/2;*/
     static int counter = 0;
 
     public BubbleView(Context context) {
@@ -68,44 +66,58 @@ public class BubbleView extends View{
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        if (started && (counter < NUM_OF_TRIALS) && (event.getAction() == MotionEvent.ACTION_DOWN)) {
+        // checks if game has been started by startGame() being called
+        if (started) {
 
-            long currTime = event.getEventTime();
-            long deltaTime = currTime - prevTime;
-            totalTime += deltaTime;
+            //checks that bubble has been popped less than max number trials
+            if (counter < NUM_OF_TRIALS) {
 
-            System.out.println(deltaTime);
-            setVisibility(View.INVISIBLE);
-            counter++;
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setVisibility(View.VISIBLE);
-                    prevTime = uptimeMillis();
-                }
-            }, 1000);
+                // checks that event is when user is touching down
+               if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                   long currTime = event.getEventTime();
+                   long deltaTime = currTime - prevTime;
+                   totalTime += deltaTime;
+
+                   setVisibility(View.INVISIBLE);
+                   counter++;
+                   postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           setVisibility(View.VISIBLE);
+                           prevTime = uptimeMillis();
+                       }
+                   }, 1000);
+               }
+            } else {
+                //for testing purposes, feel free to remove
+                System.out.println("Average time: " + getAverageTime());
+            }
         }
-
         return super.onTouchEvent(event);
     }
 
+    // just making things colorful, but I think Dr. Memon might have specified for bubble to be red
+    // in that case this method can be removed
     public void randColor() {
         r = (int) (Math.random() * 255);
         g = (int) (Math.random() * 255);
         b = (int) (Math.random() * 255);
     }
 
+    // generating random coordinates to move bubble to
     public void moveBubble() {
         x = (int) (Math.random() * 6 * getWidth() / 7);
         y = (int) (Math.random() * (getHeight() - getWidth() / 7));
     }
 
+    //flag for starting
     public void startGame() {
         started = true;
         startTime = uptimeMillis();
         prevTime = startTime;
     }
 
+    // average time - to be called after bubble popped 10 (NUM_OF_TRIALS) times
     public long getAverageTime() {
         return totalTime / NUM_OF_TRIALS;
     }
