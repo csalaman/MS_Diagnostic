@@ -18,11 +18,11 @@ public class Results extends Activity {
         // and sets it to the left hand and right hand
         leftHand = (TextView) findViewById(R.id.tap_count_left);
         //leftHand.setText(getIntent().getStringExtra(getString(R.string.LEFT)));
-        leftHand.setText(getIntent().getDoubleExtra("left_hand",-99)+"");
+        leftHand.setText(getIntent().getStringExtra(getString(R.string.LEFT)));
 
         rightHand = (TextView) findViewById(R.id.tap_count_right);
         //rightHand.setText(getIntent().getStringExtra(getString(R.string.RIGHT)));
-        rightHand.setText(getIntent().getDoubleExtra("right_hand",-99)+"");
+        rightHand.setText(getIntent().getStringExtra(getString(R.string.RIGHT)));
 
 
 

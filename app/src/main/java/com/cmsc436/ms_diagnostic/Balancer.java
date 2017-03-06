@@ -41,6 +41,8 @@ public class Balancer extends Activity {
 
     boolean started = false;
 
+    final String FROM_LAST_HAND_CODE = "NEXT_HAND";
+    final String FROM_LAST_HAND_SCORE = "LAST_SCORE";
 
     int INNER_CIRCLE = 100;
     int MID_CIRCLE = 66;
@@ -70,6 +72,8 @@ public class Balancer extends Activity {
 
     double left_score;
     double right_score;
+
+
 
     DrawPath drawPath;
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -104,7 +108,8 @@ public class Balancer extends Activity {
         timer_view = (TextView) findViewById(R.id.balance_time_text);
         score_text = (TextView) findViewById(R.id.balance_text_score);
         hand_text = (TextView) findViewById(R.id.balance_text_hand);
-        hand_text.append(" " + getString(R.string.LEFT));
+
+
         //create pointer to main screen
         final FrameLayout mainView = (android.widget.FrameLayout)findViewById(R.id.balance_view);
 
@@ -144,6 +149,15 @@ public class Balancer extends Activity {
 
         score = 0.0;
         format = new DecimalFormat("#0.000");
+
+        isDone = getIntent().getBooleanExtra(FROM_LAST_HAND_CODE,false);
+
+        if(isDone){
+            hand_text.setText(getString(R.string.hand)+getString(R.string.RIGHT));
+            left_score = getIntent().getDoubleExtra(FROM_LAST_HAND_SCORE,-999.0);
+        }else{
+            hand_text.append(" " + getString(R.string.LEFT));
+        }
         // Starting the sensor handler
         startSensorHandler();
         start_button.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +170,7 @@ public class Balancer extends Activity {
                 recordTimer.start();
             }
         });
+
     }
 
     public void startButtonClicked() {
@@ -255,7 +270,7 @@ public class Balancer extends Activity {
 
         } else{
             RedrawHandler.removeCallbacks(runnable);
-            mTsk.cancel();
+//            mTsk.cancel();
             mTmr.cancel(); //kill\release timer (our only background thread)
             mTmr = null;
             mTsk = null;
@@ -286,9 +301,9 @@ public class Balancer extends Activity {
         public void onFinish() {
             timer_view.setText("");
             //started = true;
-            start_button.setEnabled(true);
+//            start_button.setEnabled(true);
 
-            startCoordUpdate(false);
+//            startCoordUpdate(false);
             drawPath.setDrawingCacheEnabled(true);
             drawPath.buildDrawingCache();
             Bitmap bm = drawPath.getDrawingCache();
@@ -304,35 +319,37 @@ public class Balancer extends Activity {
                 final Intent intent = new Intent(Balancer.this, Results.class);
                 intent.putExtra(getString(R.string.RIGHT),""+format.format(right_score));
                 intent.putExtra(getString(R.string.LEFT),""+format.format(left_score));
-
-                start_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(intent);
-                    }
-                });
+                startActivity(intent);
+//                start_button.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                });
 
             }else {
-                hand_text.setText(getString(R.string.hand)+getString(R.string.RIGHT));
-                left_score = score;
-                score = 0.0;
+
+
                 startCoordUpdate(false);
 
                 mBallView.mX = mScrWidth/2;
                 mBallView.mY = mScrHeight/2;
-                isDone = true;
-
-                start_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println("ONCLICK IS CALLED");
-                        drawPath.clearDrawing();
-                        drawPath.setVisibility(View.VISIBLE);
-                        score_text.setText("");
-                        recordTimer.start();
-                        startCoordUpdate(true);
-                    }
-                });
+//                isDone = true;
+                Intent nextHandIntent = new Intent(Balancer.this,Balancer.class);
+                nextHandIntent.putExtra(FROM_LAST_HAND_CODE,true);
+                nextHandIntent.putExtra(FROM_LAST_HAND_SCORE,score);
+                startActivity(nextHandIntent);
+//                start_button.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        System.out.println("ONCLICK IS CALLED");
+//                        drawPath.clearDrawing();
+//                        drawPath.setVisibility(View.VISIBLE);
+//                        score_text.setText("");
+//                        recordTimer.start();
+//                        startCoordUpdate(true);
+//                    }
+//                });
             }
 
         }

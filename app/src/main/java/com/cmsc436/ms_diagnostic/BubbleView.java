@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Random;
+
 import static android.os.SystemClock.uptimeMillis;
 
 /**
@@ -24,8 +26,10 @@ public class BubbleView extends View{
 
     static int r = 0, g = 0, b = 0;
     static int x, y;
-    static int counter = 0;
+    static int counter = 1; //had to change it to 1, we where doing 11 trials
 
+    Random random; // used to generate random times
+    OnBubbleUpdateListener listner; // Similar to fragment communication, need to access the listener
     public BubbleView(Context context) {
         super(context);
         init();
@@ -46,6 +50,12 @@ public class BubbleView extends View{
         paint.setColor(Color.BLUE);
         x = this.getWidth()/2;
         y = this.getHeight()/2;
+
+        random = new Random();
+
+        // ~~ null so that we can leave it to the
+        // activity to update the view when implemented
+        this.listner = null;
     }
 
     @Override
@@ -90,6 +100,13 @@ public class BubbleView extends View{
 
                    //incrementing counter for total num of trial completed
                    counter++;
+
+                   //when the bubble is pressed, do the listener's actions as well
+                   if (listner != null) listner.onBubbleUpdate();
+
+                   // ~~ randomizing time from 1000 ms to 2000 ms
+                   //  since Atif had said the delay between two bubbles should be random
+
                    postDelayed(new Runnable() {
                        @Override
                        public void run() {
@@ -100,7 +117,8 @@ public class BubbleView extends View{
                            //setting prev time after bubble appears
                            prevTime = uptimeMillis();
                        }
-                   }, 1000);
+                   }, getRandomTime(1000,2000));
+
                }
             } else {
                 //after 10 trials completed, removing visibility from view
@@ -109,6 +127,7 @@ public class BubbleView extends View{
                 //for testing purposes, feel free to remove
                 Toast.makeText(getContext(), "Average time:" + getAverageTime(), Toast.LENGTH_LONG).show();
                 System.out.println("Average time: " + getAverageTime());
+                listner.onDone();
             }
         }
         return super.onTouchEvent(event);
@@ -133,11 +152,36 @@ public class BubbleView extends View{
         started = true;
         startTime = uptimeMillis();
         prevTime = startTime;
+
+        // ~~ Had to make counter = 0 every time the activity would start this
+        //  because for some reason the counter's number was stored
+        //  regardless of the activity being destroyed
+        counter = 1;
     }
+
+    // ~~ getter for counter
+    public int getCurrentCounter(){ return  counter; }
 
     // average time - to be called after bubble popped 10 (NUM_OF_TRIALS) times
     public long getAverageTime() {
         return totalTime / NUM_OF_TRIALS;
+    }
+
+    //generates random number between the given range
+    private int getRandomTime(int min, int max){
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    // ~~ interface for communicating with the parent activity, lets you update what every you want
+    //  when the bubble has changed, Uses Observer Design Pattern
+    public interface OnBubbleUpdateListener {
+        void onBubbleUpdate();
+        void onDone();
+    }
+
+    // ~~ Listener Setter
+    public void setOnBubbleUpdateListner(OnBubbleUpdateListener l){
+        listner = l;
     }
 
 }
