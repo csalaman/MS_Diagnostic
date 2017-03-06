@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import static android.os.SystemClock.uptimeMillis;
 
@@ -89,6 +90,11 @@ public class BubbleView extends View{
                    }, 1000);
                }
             } else {
+                setVisibility(View.INVISIBLE);
+
+                Toast.makeText(getContext(), "Average time:" + getAverageTime(), Toast.LENGTH_LONG).show();
+                //final TextView timeView = (TextView) findViewById(R.id.timeView);
+                //timeView.setText("Average time: " + getAverageTime());
                 //for testing purposes, feel free to remove
                 System.out.println("Average time: " + getAverageTime());
             }
