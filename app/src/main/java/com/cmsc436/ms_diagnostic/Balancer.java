@@ -304,12 +304,18 @@ public class Balancer extends Activity {
 //            start_button.setEnabled(true);
 
 //            startCoordUpdate(false);
-            drawPath.setDrawingCacheEnabled(true);
-            drawPath.buildDrawingCache();
-            Bitmap bm = drawPath.getDrawingCache();
+
+//            drawPath.setDrawingCacheEnabled(true);
+//            drawPath.buildDrawingCache();
+//            Bitmap bm = drawPath.getDrawingCache();
+            FrameLayout frameLayout = (FrameLayout) findViewById(R.id.balance_view);
+            frameLayout.setDrawingCacheEnabled(true);
+            frameLayout.buildDrawingCache();
+            Bitmap bm = finalBitmap(frameLayout.getDrawingCache());
 
             String imageName = (isDone) ? "Path_of_draw_2" : "Path_of_draw_1";
-            MediaStore.Images.Media.insertImage(getContentResolver(), bm, imageName , "");
+            String s = MediaStore.Images.Media.insertImage(getContentResolver(), bm, imageName , "");
+            System.out.println("------------------------------\n\t\t"+s);
             drawPath.clearDrawing();
 
             score_text.setText("Score:"+ format.format(score));
@@ -354,6 +360,15 @@ public class Balancer extends Activity {
 
         }
     };
+
+    private Bitmap finalBitmap(Bitmap b1){
+        Bitmap overlay = Bitmap.createBitmap(b1.getWidth(),b1.getHeight(), b1.getConfig());
+        Canvas canvas = new Canvas(overlay);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(b1,0,0,null);
+
+        return overlay;
+    }
 
     public class BallView extends View {
         public float mX;
@@ -454,6 +469,8 @@ public class Balancer extends Activity {
             init();
             drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         }
+
+
 
     }
 }
