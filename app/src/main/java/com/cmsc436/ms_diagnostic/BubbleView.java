@@ -26,10 +26,12 @@ public class BubbleView extends View{
 
     static int r = 0, g = 0, b = 0;
     static int x, y;
-    static int counter = 1; //had to change it to 1, we where doing 11 trials
+    int counter = 1; //had to change it to 1, we were doing 11 trials
+    int radius, width, height;
 
     Random random; // used to generate random times
     OnBubbleUpdateListener listner; // Similar to fragment communication, need to access the listener
+
     public BubbleView(Context context) {
         super(context);
         init();
@@ -38,19 +40,18 @@ public class BubbleView extends View{
     public BubbleView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+
     }
 
     public BubbleView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
+
     }
 
     private void init(){
         paint = new Paint();
         paint.setColor(Color.BLUE);
-        x = this.getWidth()/2;
-        y = this.getHeight()/2;
-
         random = new Random();
 
         // ~~ null so that we can leave it to the
@@ -58,22 +59,27 @@ public class BubbleView extends View{
         this.listner = null;
     }
 
+    private void setDimensions(int height, int width) {
+        this.height = height;
+        this.width = width;
+        x = this.width / 2;
+        y = this.height / 2;
+        radius = width / 7;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (counter == 0) {
-            x = this.getWidth()/2;
-            y = this.getHeight()/2;
+        if (counter == 1) {
+            setDimensions(getHeight(), getWidth());
         }
+
         //paint.setColor(Color.RED);
         paint.setARGB(255, r, g, b);
-        //canvas.drawCircle(x, y, radius, paint);
-        canvas.drawCircle(x, y, canvas.getWidth()/7, paint);
+        canvas.drawCircle(x, y, radius, paint);
         randColor();
         moveBubble();
-        //invalidate();
-        //canvas.drawCircle(this.getWidth()/2, this.getHeight()/2, this.getWidth()/7, paint);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -143,8 +149,8 @@ public class BubbleView extends View{
 
     // generating random x and y coordinates to move bubble to
     public void moveBubble() {
-        x = (int) (Math.random() * 6 * getWidth() / 7);
-        y = (int) (Math.random() * (getHeight() - getWidth() / 7));
+        x = (int) (Math.random() * (width - (2 * radius))) + radius;
+        y = (int) (Math.random() * (height - (2 * radius))) + radius;
     }
 
     //flag for starting game
@@ -156,7 +162,7 @@ public class BubbleView extends View{
         // ~~ Had to make counter = 0 every time the activity would start this
         //  because for some reason the counter's number was stored
         //  regardless of the activity being destroyed
-        counter = 1;
+        //counter = 1;
     }
 
     // ~~ getter for counter
