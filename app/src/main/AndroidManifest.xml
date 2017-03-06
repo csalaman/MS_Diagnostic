@@ -26,6 +26,7 @@
         <activity android:name=".Trace" />
         <activity android:name=".Balancer" />
         <activity android:name=".moveBall" />
+        <activity android:name=".BubbleActivity"/>
 
         <service
             android:name=".SensorService"

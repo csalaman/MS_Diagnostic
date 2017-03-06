@@ -33,23 +33,24 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/timeView"
-        android:layout_toEndOf="@+id/start_bubble_button"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="28dp"
-        android:id="@+id/bubble_button" />
+    <!--<Button-->
+        <!--android:text="Button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/timeView"-->
+        <!--android:layout_toEndOf="@+id/start_bubble_button"-->
+        <!--android:layout_marginStart="11dp"-->
+        <!--android:layout_marginTop="28dp"-->
+        <!--android:id="@+id/bubble_button" />-->
 
-    <com.cmsc436.ms_diagnostic.BubbleView
-        android:layout_width="match_parent"
-        android:layout_height="393dp"
-        android:id="@+id/bubble2"
-        android:layout_below="@+id/timeView"
-        android:layout_alignEnd="@+id/timeView" />
-
+    <!--<com.cmsc436.ms_diagnostic.BubbleView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="393dp"-->
+        <!--android:id="@+id/bubble2"-->
+        <!--android:layout_below="@+id/timeView"-->
+        <!--android:layout_alignEnd="@+id/timeView" />-->
+<!-- ~~ I think there was a problem with the merge, and it had put put two files togather,
+    removing the last bit-->
 
 
 
