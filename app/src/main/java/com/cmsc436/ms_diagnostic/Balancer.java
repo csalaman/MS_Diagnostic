@@ -68,7 +68,7 @@ public class Balancer extends Activity {
     TextView hand_text;
 
     boolean isDone = false;
-    NumberFormat format;
+//    NumberFormat format;
 
     double left_score;
     double right_score;
@@ -148,7 +148,7 @@ public class Balancer extends Activity {
         mBallView.invalidate(); //call onDraw in BallView
 
         score = 0.0;
-        format = new DecimalFormat("#0.000");
+//        format = new DecimalFormat("#0.000");
 
         isDone = getIntent().getBooleanExtra(FROM_LAST_HAND_CODE,false);
 
@@ -318,13 +318,13 @@ public class Balancer extends Activity {
             System.out.println("------------------------------\n\t\t"+s);
             drawPath.clearDrawing();
 
-            score_text.setText("Score:"+ format.format(score));
+            score_text.setText("Score:"+ Math.round((left_score*100)/100));
 
             if(isDone){
                 right_score = score;
                 final Intent intent = new Intent(Balancer.this, Results.class);
-                intent.putExtra(getString(R.string.RIGHT),""+format.format(right_score));
-                intent.putExtra(getString(R.string.LEFT),""+format.format(left_score));
+                intent.putExtra(getString(R.string.RIGHT),""+Math.round((right_score * 100)/100));
+                intent.putExtra(getString(R.string.LEFT),""+Math.round((left_score*100)/100));
                 startActivity(intent);
 //                start_button.setOnClickListener(new View.OnClickListener() {
 //                    @Override
