@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -121,7 +122,7 @@ public class Trace extends AppCompatActivity {
 //        traceView.buildDrawingCache();
 //        Bitmap bm = traceView.getDrawingCache();
 
-        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_trace);
+        final FrameLayout relativeLayout = (FrameLayout) findViewById(R.id.trace_frame_layout);
 //        final RelativeLayout relativeLayout = (RelativeLayout) getWindow().getDecorView().getRootView();
         relativeLayout.setDrawingCacheEnabled(true);
         relativeLayout.buildDrawingCache();

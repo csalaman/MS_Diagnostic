@@ -19,6 +19,7 @@ import android.icu.text.NumberFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -313,8 +314,9 @@ public class Balancer extends Activity {
             frameLayout.buildDrawingCache();
             Bitmap bm = finalBitmap(frameLayout.getDrawingCache());
 
-            String imageName = (isDone) ? "Path_of_draw_2" : "Path_of_draw_1";
-            String s = MediaStore.Images.Media.insertImage(getContentResolver(), bm, imageName , "");
+//            String imageName = (isDone) ? "Path_of_draw_2" : "Path_of_draw_1";
+            String s = MediaStore.Images.Media.insertImage(getContentResolver(), bm, "" , "");
+
             System.out.println("------------------------------\n\t\t"+s);
             drawPath.clearDrawing();
 
