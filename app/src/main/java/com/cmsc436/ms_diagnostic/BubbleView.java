@@ -75,48 +75,60 @@ public class BubbleView extends View{
 
                 // checks that event is when user is touching down
                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                   //current event time
                    long currTime = event.getEventTime();
+
+                   // time elapsed since bubble appeared (user reaction time)
                    long deltaTime = currTime - prevTime;
+
+                   //adding deltaTime to total time for total reaction time
                    totalTime += deltaTime;
 
+                   // "popping bubble"
                    setVisibility(View.INVISIBLE);
+
+                   //incrementing counter for total num of trial completed
                    counter++;
                    postDelayed(new Runnable() {
                        @Override
                        public void run() {
+
+                           //making bubble appear after being popped
                            setVisibility(View.VISIBLE);
+
+                           //setting prev time after bubble appears
                            prevTime = uptimeMillis();
                        }
                    }, 1000);
                }
             } else {
+                //after 10 trials completed, removing visibility from view
                 setVisibility(View.INVISIBLE);
 
-                Toast.makeText(getContext(), "Average time:" + getAverageTime(), Toast.LENGTH_LONG).show();
-                //final TextView timeView = (TextView) findViewById(R.id.timeView);
-                //timeView.setText("Average time: " + getAverageTime());
                 //for testing purposes, feel free to remove
+                Toast.makeText(getContext(), "Average time:" + getAverageTime(), Toast.LENGTH_LONG).show();
                 System.out.println("Average time: " + getAverageTime());
             }
         }
         return super.onTouchEvent(event);
     }
 
-    // just making things colorful, but I think Dr. Memon might have specified for bubble to be red
-    // in that case this method can be removed
+    // just making things colorful, but I think Dr. Memon might have specified
+    // for bubble to be red. In that case this method can be removed
     public void randColor() {
         r = (int) (Math.random() * 255);
         g = (int) (Math.random() * 255);
         b = (int) (Math.random() * 255);
     }
 
-    // generating random coordinates to move bubble to
+    // generating random x and y coordinates to move bubble to
     public void moveBubble() {
         x = (int) (Math.random() * 6 * getWidth() / 7);
         y = (int) (Math.random() * (getHeight() - getWidth() / 7));
     }
 
-    //flag for starting
+    //flag for starting game
     public void startGame() {
         started = true;
         startTime = uptimeMillis();
