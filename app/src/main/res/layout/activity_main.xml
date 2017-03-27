@@ -70,7 +70,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Google Test"
+        android:text="Flex Test"
         android:background="@color/colorAccent"
         android:id="@+id/button_google_text"
         android:layout_below="@+id/button_bubble_activity"

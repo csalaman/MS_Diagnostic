@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -29,7 +30,7 @@
         <activity android:name=".balloon_test.BubbleActivity" />
 
         <service
-            android:name=".SensorService"
+            android:name=".SensorServiceTest"
             android:enabled="true" />
 
         <activity android:name=".google_spread_sheets.TestGoogleAPI" />
@@ -39,7 +40,14 @@
         <activity android:name=".sprial_test.TraceInstr" />
         <activity android:name=".level_test.BalancerInstr" />
         <activity android:name=".level_test.Balancer_Test" />
-        <activity android:name=".balloon_test.BubbleInstr"></activity>
+        <activity android:name=".balloon_test.BubbleInstr" />
+        <activity android:name=".flex_test.FlexInstr" />
+        <activity android:name=".flex_test.FlexTest"
+            android:screenOrientation="reverseLandscape">
+
+        </activity >
+        <activity android:name=".flex_test.FlexCalibrate"
+            android:screenOrientation="reverseLandscape"></activity>
     </application>
 
 </manifest>
