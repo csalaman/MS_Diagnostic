@@ -1,4 +1,4 @@
-package com.cmsc436.ms_diagnostic;
+package com.cmsc436.ms_diagnostic.balloon_test;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -47,6 +47,14 @@ public class BubbleView extends View{
         super(context, attrs, defStyle);
         init();
 
+    }
+
+    public void reset(){
+        paint = new Paint();
+        paint.setColor(Color.BLUE);
+        random = new Random();
+        counter =1;
+        invalidate();
     }
 
     private void init(){

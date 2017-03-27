@@ -67,4 +67,15 @@
         android:layout_marginTop="12dp"
         android:onClick="startBubble"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Google Test"
+        android:background="@color/colorAccent"
+        android:id="@+id/button_google_text"
+        android:layout_below="@+id/button_bubble_activity"
+        android:layout_alignStart="@+id/button_tap_activity"
+        android:layout_marginTop="12dp"
+        android:onClick="startGoogle"/>
+
 </RelativeLayout>

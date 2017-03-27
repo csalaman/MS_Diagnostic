@@ -1,4 +1,4 @@
-package com.cmsc436.ms_diagnostic;
+package com.cmsc436.ms_diagnostic.sprial_test;
 
 import android.content.Context;
 import android.graphics.Bitmap;

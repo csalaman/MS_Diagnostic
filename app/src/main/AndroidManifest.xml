@@ -23,19 +23,23 @@
         </activity>
         <activity android:name=".tap_test.TapActivity" />
         <activity android:name=".Results" />
-        <activity android:name=".Trace" />
-        <activity android:name=".Balancer" />
+        <activity android:name=".sprial_test.Trace" />
+        <activity android:name=".level_test.Balancer" />
         <activity android:name=".moveBall" />
-        <activity android:name=".BubbleActivity"/>
+        <activity android:name=".balloon_test.BubbleActivity" />
 
         <service
             android:name=".SensorService"
             android:enabled="true" />
 
-
-        <activity android:name=".TestGoogleAPI"></activity>
+        <activity android:name=".google_spread_sheets.TestGoogleAPI" />
         <activity android:name=".tap_check_test.TappingTest" />
-        <activity android:name=".tap_check_test.TappingInstr"></activity>
+        <activity android:name=".tap_check_test.TappingInstr" />
+        <activity android:name=".google_spread_sheets.TestGoogleComm" />
+        <activity android:name=".sprial_test.TraceInstr" />
+        <activity android:name=".level_test.BalancerInstr" />
+        <activity android:name=".level_test.Balancer_Test" />
+        <activity android:name=".balloon_test.BubbleInstr"></activity>
     </application>
 
 </manifest>

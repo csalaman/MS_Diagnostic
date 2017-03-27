@@ -7,6 +7,14 @@ import android.transition.Explode;
 import android.view.View;
 import android.view.Window;
 
+import com.cmsc436.ms_diagnostic.balloon_test.BubbleActivity;
+import com.cmsc436.ms_diagnostic.balloon_test.BubbleInstr;
+import com.cmsc436.ms_diagnostic.google_spread_sheets.TestGoogleAPI;
+import com.cmsc436.ms_diagnostic.google_spread_sheets.TestGoogleComm;
+import com.cmsc436.ms_diagnostic.level_test.Balancer;
+import com.cmsc436.ms_diagnostic.level_test.BalancerInstr;
+import com.cmsc436.ms_diagnostic.sprial_test.Trace;
+import com.cmsc436.ms_diagnostic.sprial_test.TraceInstr;
 import com.cmsc436.ms_diagnostic.tap_check_test.TappingInstr;
 
 public class MainActivity extends Activity {
@@ -22,7 +30,6 @@ public class MainActivity extends Activity {
 
     // changes
     public void toTapActivity(View view){
-
        // startActivity(new Intent(MainActivity.this,TapActivity.class));
         startActivity(new Intent(MainActivity.this,TappingInstr.class));
 
@@ -31,17 +38,22 @@ public class MainActivity extends Activity {
 
 
     public void startSpiralTest(View v){
-        Intent spiral_intent = new Intent(this,Trace.class);
+        Intent spiral_intent = new Intent(this,TraceInstr.class);
         startActivity(spiral_intent);
     }
 
     public void startBalancer(View v){
-        Intent intent = new Intent(this,Balancer.class);
+        Intent intent = new Intent(this,BalancerInstr.class);
         startActivity(intent);
     }
 
     public void startBubble(View v) {
-        Intent intent = new Intent(this, BubbleActivity.class);
+        Intent intent = new Intent(this, BubbleInstr.class);
+        startActivity(intent);
+    }
+
+    public void startGoogle(View v){
+        Intent intent = new Intent(this,TestGoogleAPI.class);
         startActivity(intent);
     }
 

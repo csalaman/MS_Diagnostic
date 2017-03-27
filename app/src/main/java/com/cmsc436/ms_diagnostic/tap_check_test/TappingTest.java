@@ -11,12 +11,22 @@ import android.widget.TextView;
 
 import com.cmsc436.ms_diagnostic.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TappingTest extends Activity {
+
+    public final static String DATA_LIST = "TAPP_DATA_LIST";
 
     int testCount = 0;
     double tapCountAverage = 0;
-    int count_taps = 0;
-    boolean onCount ;
+    int count_taps = 0; // ~~ making this var now only count one single test
+    int totalCount = 0; // ~~ this count will count the total taps and will be added to intent extra
+    boolean onCount;
+
+    // ~~ this is the list of data will be sent to the Google Docs
+    // ~~ additionally I am using ArrayList because its Serializable and makes my life easy
+    ArrayList<Object> data;
 
     TextView display_text;
     CountDownTimer downTimer;
@@ -30,6 +40,8 @@ public class TappingTest extends Activity {
         display_text = (TextView) findViewById(R.id.display_text);
         tap_imgButton = (Button) findViewById(R.id.tap_imgbutton);
         start_button = (Button) findViewById(R.id.start_test_button);
+
+        data = new ArrayList<>();
 
         display_text.setText("Press \"Start\" to start Test "+ (testCount+1));
 
@@ -45,11 +57,20 @@ public class TappingTest extends Activity {
                 display_text.setText("Press \"Start\" to start Test "+ (testCount+1));
                 start_button.setVisibility(View.VISIBLE);
 
+                // ~~ updating the data list
+                data.add(count_taps);
+
+                // ~~ update totalCount and reset count_taps
+                totalCount += count_taps;
+                count_taps = 0;
+
                 if(testCount == 3){
                     // To-Do: Return results to previous activity, and get average of 3 test
                     // the data we will like to send is the tapCountAverage = count_tap / 3;
                     Intent result = new Intent();
-                    result.putExtra("data",count_taps);
+                    result.putExtra("data",totalCount); //instead of count_taps being sent, now total is
+                    result.putExtra(TappingTest.DATA_LIST,data);
+
                     setResult(Activity.RESULT_OK,result);
                     finish();
                 }
