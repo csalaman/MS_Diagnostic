@@ -9,6 +9,8 @@ import android.view.Window;
 
 import com.cmsc436.ms_diagnostic.balloon_test.BubbleActivity;
 import com.cmsc436.ms_diagnostic.balloon_test.BubbleInstr;
+import com.cmsc436.ms_diagnostic.flex_test.FlexCalibrate;
+import com.cmsc436.ms_diagnostic.flex_test.FlexInstr;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.TestGoogleAPI;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.TestGoogleComm;
 import com.cmsc436.ms_diagnostic.level_test.Balancer;
@@ -53,7 +55,7 @@ public class MainActivity extends Activity {
     }
 
     public void startGoogle(View v){
-        Intent intent = new Intent(this,TestGoogleAPI.class);
+        Intent intent = new Intent(this,FlexInstr.class);
         startActivity(intent);
     }
 

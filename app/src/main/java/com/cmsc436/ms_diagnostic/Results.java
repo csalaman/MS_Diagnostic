@@ -18,13 +18,18 @@ public class Results extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_results);
 
+        String result = getIntent().getStringExtra(getString(R.string.LEFT));
+        result = result.substring(0,Math.min(5,result.length()));
         //Gets data from the Intent that started the activity
         // and sets it to the left hand and right hand
         leftHand = (TextView) findViewById(R.id.tap_count_left);
-        leftHand.setText(getIntent().getStringExtra(getString(R.string.LEFT)));
+        leftHand.setText(result);
+
+        result = getIntent().getStringExtra(getString(R.string.RIGHT));
+        result = result.substring(0,Math.min(5,result.length()));
 
         rightHand = (TextView) findViewById(R.id.tap_count_right);
-        rightHand.setText(getIntent().getStringExtra(getString(R.string.RIGHT)));
+        rightHand.setText(result);
 
         // this button will pop all of the back stack and return home
         homeButton = (Button) findViewById(R.id.result_home_button);
