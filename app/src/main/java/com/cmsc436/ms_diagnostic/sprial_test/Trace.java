@@ -1,4 +1,4 @@
-package com.cmsc436.ms_diagnostic;
+package com.cmsc436.ms_diagnostic.sprial_test;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -6,12 +6,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -19,18 +15,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import com.cmsc436.ms_diagnostic.R;
+import com.cmsc436.ms_diagnostic.Results;
+
+import java.util.ArrayList;
 
 public class Trace extends AppCompatActivity {
 
@@ -40,12 +35,19 @@ public class Trace extends AppCompatActivity {
 
     private DrawView draw_event;
 
+    public static final String DATA_LIST = "DATALIST";
+    public static final String DATA = "DATA";
+
     public static final String STATE_LH = "Left_Hand_Sec";
     public static final String STATE_RH = "Right_Hand_Sec";
-    private long left_h_time = 0;
-    private long right_h_time = 0;
 
+//    private long left_h_time = 0;
+//    private long right_h_time = 0;
+
+    private long totalTime = 0;
     private int testCount = 0;
+
+    ArrayList<Object> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,8 @@ public class Trace extends AppCompatActivity {
 
         draw_event.setVisibility(View.GONE);
 
+        data = new ArrayList<>();
+
     }
 
     @Override
@@ -116,12 +120,10 @@ public class Trace extends AppCompatActivity {
         stop_button.setEnabled(false);
         long elapsedTime = (SystemClock.elapsedRealtime() - timer.getBase() )/1000;
 
-//        DrawView traceView = (DrawView)findViewById(R.id.trace_draw_view);
-//        traceView.setDrawingCacheEnabled(true);
-//        traceView.buildDrawingCache();
-//        Bitmap bm = traceView.getDrawingCache();
-
-        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_trace);
+        //~~ updating the time to data
+        data.add(elapsedTime);
+        totalTime+=elapsedTime;
+        final FrameLayout relativeLayout = (FrameLayout) findViewById(R.id.trace_frame_layout);
 //        final RelativeLayout relativeLayout = (RelativeLayout) getWindow().getDecorView().getRootView();
         relativeLayout.setDrawingCacheEnabled(true);
         relativeLayout.buildDrawingCache();
@@ -129,68 +131,37 @@ public class Trace extends AppCompatActivity {
 
         Bitmap finalBM = finalBitmap(backLayer);
 
-//        Bitmap finalPic = overlayBitmap(bm, backLayer);
-
-        /*
-        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
-        String imageName = (testCount == 1) ? "/left.jpg" : "/right.jpg";
-        File file = new File(myDir, imageName);
-*/
-
-
-        //String path = Environment.getExternalStorageDirectory().getPath();
-        //String path = getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getPath();
-
-        //File file = new File("/mnt" + path + imageName);
-        /*
-        if (file.exists ()) file.delete ();
-        try {
-            //FileOutputStream outputStream = new FileOutputStream(new File("/mnt" + path + imageName));
-            FileOutputStream out = new FileOutputStream(file);
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            //bm.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(new File(path + imageName)));
-            //bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            //outputStream.flush();
-            //outputStream.close();
-        } catch (FileNotFoundException e) {
-            Log.e("File not found", e.toString());
-        }
-        */
-        /*
-        MediaScannerConnection.scanFile(this, new String[] { file.toString() }, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        Log.i("ExternalStorage", "Scanned " + path + ":");
-                        Log.i("ExternalStorage", "-> uri=" + uri);
-                    }
-                });
-    */
         String title = (testCount == 1) ? "left_spiral":"right_spiral";
-        String s = MediaStore.Images.Media.insertImage(getContentResolver(), finalBM, title , "");
+        MediaStore.Images.Media.insertImage(getContentResolver(), finalBM, title , "");
 
-        System.out.println("RETURNED STRTING - "+s);
 
         draw_event.setVisibility(View.GONE);
         draw_event.clearDrawing();
+        Toast.makeText(this, "Ellapsed Time: " + elapsedTime +" seconds.", Toast.LENGTH_LONG).show();
 
-        if(testCount == 1){
-            left_h_time = elapsedTime;
-        }else{
-            right_h_time = elapsedTime;
+//        if(testCount == 1){
+//            left_h_time = elapsedTime;
+//        }else{
+        if(testCount == 3){
+
+            Intent intent = new Intent();
+            intent.putExtra(DATA,totalTime);
+            intent.putExtra(DATA_LIST,data);
+            setResult(RESULT_OK,intent);
+            finish();
+
+//            right_h_time = elapsedTime;
             // Exit transition
-            getWindow().setExitTransition(new Fade());
-            Intent myIntent = new Intent(this,Results.class);
-            myIntent.putExtra(getString(R.string.LEFT),""+left_h_time);
-            myIntent.putExtra(getString(R.string.RIGHT),""+right_h_time);
-            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+//            getWindow().setExitTransition(new Fade());
+//            Intent myIntent = new Intent();
+//            myIntent.putExtra(getString(R.string.LEFT),""+left_h_time);
+//            myIntent.putExtra(getString(R.string.RIGHT),""+right_h_time);
+//            startActivity(myIntent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             //startActivity(myIntent);
         }
 
 
 
-        Toast.makeText(this, "Ellapsed Time: " + elapsedTime +" seconds.", Toast.LENGTH_LONG).show();
 
     }
 

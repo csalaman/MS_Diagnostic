@@ -15,7 +15,7 @@ import android.support.annotation.Nullable;
  * This service collects sensor orientation data to be used by the other Activity
  */
 
-public class SensorService extends Service implements SensorEventListener{
+public class SensorServiceTest extends Service implements SensorEventListener{
 //    public static final int SERVICE_STARTED = 1;
     Sensor accelerometer;
     Sensor magneticFeild;
@@ -119,8 +119,8 @@ public class SensorService extends Service implements SensorEventListener{
     }
 
     public class LocalBinder extends Binder{
-        public SensorService getServerInstance(){
-            return SensorService.this;
+        public SensorServiceTest getServerInstance(){
+            return SensorServiceTest.this;
         }
     }
 

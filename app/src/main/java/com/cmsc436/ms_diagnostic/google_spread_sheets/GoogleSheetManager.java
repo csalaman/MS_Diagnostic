@@ -1,10 +1,9 @@
-package com.cmsc436.ms_diagnostic;
+package com.cmsc436.ms_diagnostic.google_spread_sheets;
 
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,22 +11,27 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.widget.Button;
-import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.ValueRange;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -44,19 +48,19 @@ public class GoogleSheetManager
         implements EasyPermissions.PermissionCallbacks{
 
     GoogleAccountCredential mCredential;
-    private TextView mOutputText;
-    private Button mCallApiButton;
-    ProgressDialog mProgress;
+
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
 
-    private static final String BUTTON_TEXT = "Call Google Sheets API";
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY, SheetsScopes.SPREADSHEETS};
 
+    private GoogleSheetGetData comm;
+
+    List<String> pulledData;
     Context mContext;
 
     public GoogleSheetManager(Context context){
@@ -65,23 +69,65 @@ public class GoogleSheetManager
         mCredential = GoogleAccountCredential.usingOAuth2(
                 mContext.getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+        comm = new GoogleSheetGetData(mCredential);
     }
 
 
-    public void initilizeCommunication(){
+    public void initializeCommunication(){
         if (!isGooglePlayServicesAvailable()) {
+            Log.d("CRED", "Was not available");
             acquireGooglePlayServices();
-        } else if (mCredential.getSelectedAccountName() == null) {
+
+        }
+        else if (mCredential.getSelectedAccountName() == null) {
             chooseAccount();
-        } else if (!isDeviceOnline()) {
+        }
+        else if (!isDeviceOnline()) {
            Toast.makeText(mContext,"No network connection available.",Toast.LENGTH_LONG).show();
         }
     }
 
-    public ArrayList<String> getData(){
-        //put getResultsFromApi() here
-        return null;
+    public List<String> getData(){
+        comm = new GoogleSheetGetData(mCredential);
+        comm.execute();
+//        Log.d("TASK","DONE");
+        if(pulledData == null){
+            Log.d("PROBLEM", "PULL is null");
+            System.out.println("PULL IS NULL");
+        }
+        if(pulledData != null){
+            Log.d("EXECUTE","PULL is not null");
+            System.out.println("PULL is not null");
+        }
+        return pulledData;
+
     }
+
+    public void sendData(String sheetID,List<Object> data){
+//        initializeCommunication();
+        data.add(0, SheetData.getPID());
+        data.add(1,SheetData.getTimeStamp());
+        data.add(2,1);
+
+//        ArrayList<Object> list = new ArrayList<>(Arrays.asList(
+//                SheetData.getPID(),
+//                SheetData.getTimeStamp(),
+//                1//this is where day would go
+//        ));
+//        data.addAll(Arrays.asList(
+//                SheetData.getPID(),
+//                SheetData.getTimeStamp(),
+//                1//this is where day would go
+//        ));
+        new GoogleSheetSendData(mCredential,sheetID).execute(data);
+    }
+
+    public void sendCustomData(String sheetID,List<Object> data){
+        new GoogleSheetSendData(mCredential,sheetID).execute(data);
+    }
+
+
 
     private boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability apiAvailability =
@@ -103,6 +149,7 @@ public class GoogleSheetManager
         if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
             showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
         }
+        initializeCommunication();
     }
 
     private boolean isDeviceOnline() {
@@ -146,7 +193,7 @@ public class GoogleSheetManager
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                initilizeCommunication();
+                initializeCommunication();
             } else {
                 mContext.startActivity(mCredential.newChooseAccountIntent());
                 // Start a dialog from which the user can choose an account
@@ -155,7 +202,7 @@ public class GoogleSheetManager
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
             EasyPermissions.requestPermissions(
-                    this,
+                    mContext,
                     "This app needs to access your Google account (via Contacts).",
                     REQUEST_PERMISSION_GET_ACCOUNTS,
                     Manifest.permission.GET_ACCOUNTS);
@@ -180,10 +227,11 @@ public class GoogleSheetManager
                                     "Google Play Services on your device and relaunch this app.",
                             Toast.LENGTH_LONG);
                 } else {
-                    initilizeCommunication();
+                    initializeCommunication();
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
+
                 if (resultCode == RESULT_OK && data != null &&
                         data.getExtras() != null) {
                     String accountName =
@@ -195,13 +243,13 @@ public class GoogleSheetManager
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
-                        initilizeCommunication();
+                        initializeCommunication();
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    initilizeCommunication();
+                    initializeCommunication();
                 }
                 break;
         }
@@ -223,35 +271,153 @@ public class GoogleSheetManager
 
     }
 
-    private class GoogleSheetDataCommunication extends AsyncTask<String,Void,List<String>>{
-        private final String SHEET_ID = "1E9taHON_0aqMw7_7HI_G0g_cOVaNfxxdfsbdnB9fW0Y";
+    private class GoogleSheetGetData extends AsyncTask<Void,Void,List<String>>{
         private com.google.api.services.sheets.v4.Sheets mService = null;
         private Exception exception = null;
 
-        GoogleSheetDataCommunication(GoogleAccountCredential credential){
+        GoogleSheetGetData(GoogleAccountCredential credential){
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
                     transport,jsonFactory,credential)
-                    .setApplicationName("MS TEST")
+                    .setApplicationName(SheetData.SPREADSHEET_NAME)
                     .build();
-
         }
         @Override
-        protected List<String> doInBackground(String... params) {
+        protected List<String> doInBackground(Void... params) {
             try{
-                return getData(params);
+                Log.d("EXECUTE", "doInBackGround Called");
+                return getData();
             }catch (Exception e){
+                Log.d("PROBLEM", "EXCEPTION "+ e.toString()+" Occurred");
                 exception = e;
                 cancel(true);
                 return null;
             }
         }
 
-        public List<String> getData(String[] params){
+        public List<String> getData() throws IOException {
 
+            ArrayList<String> data = new ArrayList<>();
+            ValueRange response = this.mService.spreadsheets().values().get(
+                    SheetData.SPREADSHEET_ID,
+                    SheetData.getRange(
+                            SheetData.TAPPING_TEST_LH))
+                    .execute();
+
+            List<List<Object>> values = response.getValues();
+            if(values != null){
+                for(List row: values){
+                    String s = "";
+                    for( Object o: row){
+                        s+=o+"  ";
+                    }
+                    System.out.println(s);
+                    data.add(s);
+                }
+            }
+            return data;
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (exception != null) {
+                if (exception instanceof GooglePlayServicesAvailabilityIOException) {
+                    showGooglePlayServicesAvailabilityErrorDialog(
+                            ((GooglePlayServicesAvailabilityIOException) exception)
+                                    .getConnectionStatusCode());
+                } else if (exception instanceof UserRecoverableAuthIOException) {
+                    ((Activity)mContext).startActivityForResult(
+                            ((UserRecoverableAuthIOException) exception).getIntent(),
+                            GoogleSheetManager.REQUEST_AUTHORIZATION);
+                } else {
+                    Toast.makeText(mContext,"The following error occurred:\n"
+                            + exception.getMessage(),Toast.LENGTH_LONG);
+                }
+            } else {
+                Toast.makeText(mContext,"Request cancelled.",Toast.LENGTH_LONG);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<String> strings) {
+
+            pulledData = deepCopy(strings);
+            super.onPostExecute(strings);
+        }
+
+        private List<String>deepCopy(List<String> strings){
+            List<String> s= new ArrayList<>();
+
+            for (String str: strings){
+                s.add(str);
+            }
+
+            return s;
+        }
+
+    }
+
+    private class GoogleSheetSendData extends AsyncTask<List<Object>,Void,Void>{
+        private com.google.api.services.sheets.v4.Sheets mService = null;
+        private String sheetID;
+        private Exception exception = null;
+        GoogleSheetSendData(GoogleAccountCredential credential, String sheetID){
+            // The mServices is what is used to access the data sheet data
+            mService = new com.google.api.services.sheets.v4.Sheets.Builder(
+                    AndroidHttp.newCompatibleTransport(),
+                    JacksonFactory.getDefaultInstance(),
+                    credential)
+
+                    .setApplicationName(SheetData.SPREADSHEET_NAME)
+                    .build();
+            this.sheetID = sheetID;
+        }
+        @Override
+        protected Void doInBackground(List<Object>... params) {
+            try {
+                sendData(params[0]);
+            } catch (IOException e) {
+                Log.d("PROBLEM", "EXCEPTION "+ e.toString()+" Occurred");
+                exception = e;
+                cancel(true);
+                return null;
+            }
 
             return null;
         }
+
+        private void sendData(List<Object> l) throws IOException {
+            ValueRange valueRange = new ValueRange();
+            ArrayList<List<Object>> tList = new ArrayList<>();
+            tList.add(l);
+            valueRange.setValues(tList);
+               mService.spreadsheets().values().append(
+                SheetData.SPREADSHEET_ID,
+                SheetData.getRange(sheetID),
+                valueRange).setValueInputOption("RAW").execute();
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (exception != null) {
+                if (exception instanceof GooglePlayServicesAvailabilityIOException) {
+                    showGooglePlayServicesAvailabilityErrorDialog(
+                            ((GooglePlayServicesAvailabilityIOException) exception)
+                                    .getConnectionStatusCode());
+                } else if (exception instanceof UserRecoverableAuthIOException) {
+                    ((Activity)mContext).startActivityForResult(
+                            ((UserRecoverableAuthIOException) exception).getIntent(),
+                            GoogleSheetManager.REQUEST_AUTHORIZATION);
+                } else {
+                    Toast.makeText(mContext,"The following error occurred:\n"
+                            + exception.getMessage(),Toast.LENGTH_LONG);
+                }
+            } else {
+                Toast.makeText(mContext,"Request cancelled.",Toast.LENGTH_LONG);
+            }
+        }
     }
+
+
 }

@@ -1,6 +1,5 @@
-package com.cmsc436.ms_diagnostic;
+package com.cmsc436.ms_diagnostic.level_test;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,8 +13,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.icu.text.DecimalFormat;
-import android.icu.text.NumberFormat;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -27,20 +24,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.cmsc436.ms_diagnostic.R;
+import com.cmsc436.ms_diagnostic.sprial_test.Trace;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Balancer extends Activity {
+public class Balancer_Test extends AppCompatActivity {
+
+    final String FROM_LAST_HAND_CODE = "NEXT_HAND";
+    final String FROM_LAST_HAND_SCORE = "LAST_SCORE";
+
+
 
     int INNER_CIRCLE = 100;
     int MID_CIRCLE = 66;
@@ -53,83 +56,61 @@ public class Balancer extends Activity {
     Timer mTmr = null;
     TimerTask mTsk = null;
     int mScrWidth, mScrHeight;
-    android.graphics.PointF mBallPos, mBallSpd,mCentPos;
 
     double score;
 
     float X_SCALAR;
     float Y_SCALAR;
 
+    //Point F is a good way to store x and y coordinats
+    android.graphics.PointF mBallPos, mBallSpd,mCentPos;
+
     Button start_button;
     TextView timer_view;
     TextView score_text;
     TextView hand_text;
 
-    boolean isDone = false;
-    NumberFormat format;
-
-    double left_score;
-    double right_score;
-
     DrawPath drawPath;
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
+    int trailNum;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         requestWindowFeature(Window.FEATURE_NO_TITLE); //hide title bar
         //set app to full screen and keep screen on
         getWindow().setFlags(0xFFFFFFFF,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balancer);
 
-        if (ContextCompat.checkSelfPermission(Balancer.this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        // Obtain Permissions
+        getPermission();
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(Balancer.this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(Balancer.this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        1);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-
-        }
-
+        // Initializes all of the components of the app
         start_button = (Button) findViewById(R.id.balance_bottom_button);
         timer_view = (TextView) findViewById(R.id.balance_time_text);
         score_text = (TextView) findViewById(R.id.balance_text_score);
         hand_text = (TextView) findViewById(R.id.balance_text_hand);
 
-        hand_text.append(" " + getString(R.string.LEFT));
-        //create pointer to main screen
-        final FrameLayout mainView =
-                (android.widget.FrameLayout)findViewById(R.id.balance_view);
+        start_button.setText("Start Trail: "+
+                getIntent().getIntExtra(BalancerInstr.TRIAL,-1)+
+                " for Hand: "+
+                getIntent().getStringExtra(BalancerInstr.HAND));
 
-
+        // to obtains all metrics like size and width
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        // gets width as height of the ball
         mScrWidth = displaymetrics.widthPixels;
         mScrHeight = (int) (displaymetrics.heightPixels * .70);
 
+        // this scalar determines the seed at which the balls moves
         X_SCALAR = mScrHeight/700f;
         Y_SCALAR = mScrWidth/300f;
 
-        System.out.println(">>>>>>>>>>> "+mScrHeight);
-        System.out.println("------------------- "+ mScrWidth);
         mBallPos = new android.graphics.PointF();
         mBallSpd = new android.graphics.PointF();
         mCentPos = new android.graphics.PointF();
@@ -142,52 +123,41 @@ public class Balancer extends Activity {
         mBallSpd.x = 0;
         mBallSpd.y = 0;
 
+
+        //create pointer to main screen
+        FrameLayout mainView = (android.widget.FrameLayout)findViewById(R.id.balance_view);
+
         circles = (Circles) findViewById(R.id.balance_circles);
+
         //create initial ball
         mBallView = new BallView(this, mBallPos.x, mBallPos.y, mScrWidth/30);
         mBallView.setLayoutParams(new FrameLayout.LayoutParams(mScrWidth, mScrHeight));
+        // draw view created
         drawPath = new DrawPath(this);
         drawPath.setLayoutParams(new FrameLayout.LayoutParams(mScrWidth, mScrHeight));
-//        mainView.addView(mBallView); //add ball to main screen
+        //sets the views on the layout
         mainView.addView(mBallView,1);
         mainView.addView(drawPath,2);
-//        mainView.addView(circles);
         mBallView.invalidate(); //call onDraw in BallView
 
+        //initializes score
         score = 0.0;
-        format = new DecimalFormat("#0.000");
-        // Starting the sensor handler
+        trailNum = 1;
+
         startSensorHandler();
+
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                start_button.setText(R.string.next_hand);
-                startCoordUpdate(true);
+            public void onClick(View v) {
+
                 start_button.setEnabled(false);
+                startCoordinateUpdate();
                 recordTimer.start();
+                //TODO RECORD TIME
             }
         });
     }
 
-    @Override
-    public void onPause(){ //app moved to background, stop background threads
-
-        startCoordUpdate(false);
-        super.onPause();
-    }
-
-    @Override
-    public void onResume(){ //app moved to foreground (also occurs at app startup)
-
-        super.onResume();
-    } // onResume
-
-
-    @Override
-    public void onDestroy(){ //main thread stopped
-        super.onDestroy();
-        System.runFinalizersOnExit(true); //wait for threads to exit before clearing app
-    }
 
     private void startSensorHandler(){
         ((SensorManager)getSystemService(Context.SENSOR_SERVICE)).registerListener(
@@ -207,49 +177,85 @@ public class Balancer extends Activity {
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private void startCoordUpdate(boolean start){
+    // goes and gets permission for for saving pictures
+    private void getPermission(){
+        if (ContextCompat.checkSelfPermission(Balancer_Test.this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(Balancer_Test.this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(Balancer_Test.this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+
+        }
+    }
+
+
+    private void startCoordinateUpdate(){
         mTmr = new Timer();
+
+        mBallView.mX = mCentPos.x;
+        mBallView.mY = mCentPos.y;
+        mBallSpd.x = 0;
+        mBallSpd.y = 0;
+
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                mBallView.invalidate();
+                drawPath.onCoordUpdate(mBallView.mX,mBallView.mY);
+            }};
+
         mTsk = new TimerTask() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
+//            @RequiresApi(api = Build.VERSION_CODES.N)
+
             public void run() {
                 //move ball based on current speed
                 mBallPos.x += mBallSpd.x * X_SCALAR;
                 mBallPos.y += mBallSpd.y * Y_SCALAR;
+
                 //if ball goes off screen, reposition to opposite side of screen
-                if (mBallPos.x > mScrWidth) mBallPos.x=mScrWidth;
-                if (mBallPos.y > mScrHeight -  (mScrHeight * .1f)) mBallPos.y=mScrHeight - (mScrHeight * .1f);
-                if (mBallPos.x < 0) mBallPos.x=0;
-                if (mBallPos.y < 0) mBallPos.y=0;
+                if (mBallPos.x > mScrWidth) {
+                    mBallPos.x = mScrWidth;
+                }
+                if (mBallPos.y > mScrHeight -  (mScrHeight * .1f)) {
+                    mBallPos.y = mScrHeight - (mScrHeight * .1f);
+                }
+                if (mBallPos.x < 0) {
+                    mBallPos.x = 0;
+                }
+                if (mBallPos.y < 0) {
+                    mBallPos.y = 0;
+                }
                 //update ball class instance
                 mBallView.mX = mBallPos.x;
                 mBallView.mY = mBallPos.y;
                 score += getScore(mBallPos.x,mBallPos.y);
 
-//                TODO: ONLY THE ORIGNAL THREAD THAT CREATED A VIEW HIERARCHY CAN TOUCH ITS VIEWS
-//                score_text.append(""+format.format(score));
-
                 //redraw ball. Must run in background thread to prevent thread lock.
-                RedrawHandler.post(new Runnable() {
-                    public void run() {
-                        mBallView.invalidate();
-                        drawPath.onCoordUpdate(mBallView.mX,mBallView.mY);
-                    }});
+                RedrawHandler.post(runnable);
             }}; // TimerTask
 
-        mBallView.mX = mCentPos.x;
-        mBallView.mY = mCentPos.y;
-        if(start){
-            //create timer to move ball to new position
-//            mTmr = new Timer();
-            mTmr.schedule(mTsk,10,10); //start timer
-        }
+        mTmr.schedule(mTsk, 10, 10);
 
-        else{
-            mTmr.cancel(); //kill\release timer (our only background thread)
-            mTmr = null;
-            mTsk = null;
-        }
     }
+
     private double getScore(float x, float y){
         double dist = Math.sqrt(Math.pow(mCentPos.x - x,2) + Math.pow(mCentPos.y - y, 2));
 
@@ -263,95 +269,61 @@ public class Balancer extends Activity {
             return .01 * NEG_CIR;
         }
     }
-    final CountDownTimer recordTimer = new CountDownTimer(10000, 1000) {
 
+
+
+    // Takes care of timerss and what to at the end of the test
+    final CountDownTimer recordTimer = new CountDownTimer(10000,1000) {
         @Override
         public void onTick(long millisUntilFinished) {
-            timer_view.setText("Timer: " + (int) millisUntilFinished / 1000 + " sec");
+            timer_view.setText("Time: " + (int) millisUntilFinished / 1000 + " sec");
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onFinish() {
-            timer_view.setText("");
+            timer_view.setText("Score: "+ score);
+
+            // Saving the image
+            FrameLayout frameLayout = (FrameLayout) findViewById(R.id.balance_view);
+            frameLayout.setDrawingCacheEnabled(true);
+            frameLayout.buildDrawingCache();
+            Bitmap bm = finalBitmap(frameLayout.getDrawingCache());
+            MediaStore.Images.Media.insertImage(getContentResolver(), bm, "" , "");
+
+            mBallView.setVisibility(View.GONE);
+            drawPath.setVisibility(View.GONE);
+
+            start_button.setText("Back to Main Screen");
             start_button.setEnabled(true);
-
-            startCoordUpdate(false);
-
-
-            if(isDone){
-                drawPath.setDrawingCacheEnabled(true);
-                drawPath.buildDrawingCache();
-                Bitmap bm = drawPath.getDrawingCache();
-
-                //String title = (testCount == 1) ? "left_spiral_2":"right_spiral_2";
-                MediaStore.Images.Media.insertImage(getContentResolver(), bm, "PAth_of_draw_2" , "");
-
-                //drawPath.setVisibility(View.GONE);
-                drawPath.clearDrawing();
-
-                score_text.setText("Score: "+ format.format(score));
-                right_score = score;
-                final Intent intent = new Intent(Balancer.this,Results.class);
-                intent.putExtra(getString(R.string.RIGHT),""+format.format(right_score));
-                intent.putExtra(getString(R.string.LEFT),""+format.format(left_score));
-                start_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(intent);
-                    }
-                });
-            }else {
-                drawPath.setDrawingCacheEnabled(true);
-                drawPath.buildDrawingCache();
-                Bitmap bm = drawPath.getDrawingCache();
-
-                //String title = (testCount == 1) ? "left_spiral_2":"right_spiral_2";
-                MediaStore.Images.Media.insertImage(getContentResolver(), bm, "PAth_of_draw_1" , "");
-
-                //drawPath.setVisibility(View.GONE);
-                drawPath.clearDrawing();
-
-
-                score_text.setText("Score: "+ format.format(score));
-                hand_text.setText(getString(R.string.hand)+getString(R.string.RIGHT));
-                left_score = score;
-                score = 0.0;
-                startCoordUpdate(false);
-                mBallView.mX = mScrWidth/2;
-                mBallView.mY = mScrHeight/2;
-                isDone = true;
-
-                start_button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        System.out.println("ONCLICK IS CALLED");
-                        drawPath.clearDrawing();
-                        drawPath.setVisibility(View.VISIBLE);
-                        score_text.setText("");
-                        recordTimer.start();
-                        startCoordUpdate(true);
-                    }
-                });
-            }
+            start_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra(BalancerInstr.GET_SCORE,score);
+//                    intent.putExtra(BalancerInstr.TRIAL,getIntent().getIntExtra(BalancerInstr.TRIAL,0));
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+            });
 
         }
-
-
-
-
-
     };
 
+    private Bitmap finalBitmap(Bitmap b1){
+        Bitmap overlay = Bitmap.createBitmap(b1.getWidth(),b1.getHeight(), b1.getConfig());
+        Canvas canvas = new Canvas(overlay);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(b1,0,0,null);
+
+        return overlay;
+    }
 
 
     public class BallView extends View {
-
         public float mX;
         public float mY;
         private final int mR;
         private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
 
         //construct new ball object
         public BallView(Context context, float x, float y, int r) {
@@ -361,10 +333,7 @@ public class Balancer extends Activity {
             this.mX = x;
             this.mY = y;
             this.mR = r; //radius
-
         }
-
-
 
         //called by invalidate()
         @Override
@@ -374,7 +343,8 @@ public class Balancer extends Activity {
         }
     }
 
-    public class DrawPath extends View{
+
+    public class DrawPath extends View {
         //drawing path
         private Path drawPath;
 
@@ -392,9 +362,6 @@ public class Balancer extends Activity {
 
         //canvas bitmap
         private Bitmap canvasBitmap;
-
-
-
 
         public DrawPath(Context context) {
             super(context);
@@ -434,7 +401,6 @@ public class Balancer extends Activity {
             drawPaint.setStrokeCap(Paint.Cap.ROUND);
             drawPaint.setAlpha(125);
             canvasPaint = new Paint(Paint.DITHER_FLAG);
-
             drawPath.moveTo(mCentPos.x,mCentPos.y);
         }
 
@@ -448,12 +414,6 @@ public class Balancer extends Activity {
             drawPath.lineTo(x,y);
             invalidate();
         }
-//        @Override
-//        public boolean onGenericMotionEvent(MotionEvent event) {
-//            drawPath.lineTo(event.getX(),event.getY());
-//            invalidate();
-//            return true;
-//        }
 
         public void clearDrawing(){
             init();

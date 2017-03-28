@@ -41,7 +41,7 @@
         android:id="@+id/balance_view"
         >
 
-        <com.cmsc436.ms_diagnostic.Circles
+        <com.cmsc436.ms_diagnostic.level_test.Circles
             android:layout_width="match_parent"
             android:layout_height="393dp"
             android:id="@+id/balance_circles"/>
