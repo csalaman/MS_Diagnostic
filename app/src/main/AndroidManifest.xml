@@ -33,7 +33,6 @@
             android:name=".SensorServiceTest"
             android:enabled="true" />
 
-        <activity android:name=".google_spread_sheets.TestGoogleAPI" />
         <activity android:name=".tap_check_test.TappingTest" />
         <activity android:name=".tap_check_test.TappingInstr" />
         <activity android:name=".sprial_test.TraceInstr" />
