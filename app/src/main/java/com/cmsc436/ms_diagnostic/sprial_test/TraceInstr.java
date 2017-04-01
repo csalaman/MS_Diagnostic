@@ -76,16 +76,20 @@ public class TraceInstr extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1){
-            leftScore =  data.getLongExtra(DATA,0)/3;
-            googleSheetManager.sendData(
-                    SheetData.SPIRAL_TEST_LH,
-                    (ArrayList<Object>)data.getSerializableExtra(Trace.DATA_LIST));
+            if(resultCode == RESULT_OK) {
+                leftScore = data.getLongExtra(DATA, 0) / 3;
+                googleSheetManager.sendData(
+                        SheetData.SPIRAL_TEST_LH,
+                        (ArrayList<Object>) data.getSerializableExtra(Trace.DATA_LIST));
+            }
         }
         else if(requestCode == 2){
-            rightScore = data.getLongExtra(DATA,0);
-            googleSheetManager.sendData(
-                    SheetData.SPIRAL_TEST_RH,
-                    (ArrayList<Object>)data.getSerializableExtra(Trace.DATA_LIST));
+            if(resultCode == RESULT_OK) {
+                rightScore = data.getLongExtra(DATA, 0);
+                googleSheetManager.sendData(
+                        SheetData.SPIRAL_TEST_RH,
+                        (ArrayList<Object>) data.getSerializableExtra(Trace.DATA_LIST));
+            }
         }
         else {
             googleSheetManager.setServices(requestCode,resultCode,data);
