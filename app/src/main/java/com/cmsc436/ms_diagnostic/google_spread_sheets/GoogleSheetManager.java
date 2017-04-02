@@ -24,7 +24,10 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.Sheet;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
@@ -58,8 +61,6 @@ public class GoogleSheetManager
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY, SheetsScopes.SPREADSHEETS};
 
-    private GoogleSheetGetData comm;
-
     List<String> pulledData;
     Context mContext;
 
@@ -70,7 +71,7 @@ public class GoogleSheetManager
                 mContext.getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
 
-        comm = new GoogleSheetGetData(mCredential);
+//        comm = new GoogleSheetGetData(mCredential);
     }
 
 
@@ -88,45 +89,32 @@ public class GoogleSheetManager
         }
     }
 
-    public List<String> getData(){
-        comm = new GoogleSheetGetData(mCredential);
-        comm.execute();
-//        Log.d("TASK","DONE");
-        if(pulledData == null){
-            Log.d("PROBLEM", "PULL is null");
-            System.out.println("PULL IS NULL");
-        }
-        if(pulledData != null){
-            Log.d("EXECUTE","PULL is not null");
-            System.out.println("PULL is not null");
-        }
-        return pulledData;
-
-    }
+//    public List<String> getData(){
+//        comm = new GoogleSheetGetData(mCredential);
+//        comm.execute();
+////        Log.d("TASK","DONE");
+//        if(pulledData == null){
+//            Log.d("PROBLEM", "PULL is null");
+//            System.out.println("PULL IS NULL");
+//        }
+//        if(pulledData != null){
+//            Log.d("EXECUTE","PULL is not null");
+//            System.out.println("PULL is not null");
+//        }
+//        return pulledData;
+//
+//    }
 
     public void sendData(String sheetID,List<Object> data){
-//        initializeCommunication();
-        data.add(0, SheetData.getPID());
-        data.add(1,SheetData.getTimeStamp());
-        data.add(2,1);
-
-//        ArrayList<Object> list = new ArrayList<>(Arrays.asList(
-//                SheetData.getPID(),
-//                SheetData.getTimeStamp(),
-//                1//this is where day would go
-//        ));
-//        data.addAll(Arrays.asList(
-//                SheetData.getPID(),
-//                SheetData.getTimeStamp(),
-//                1//this is where day would go
-//        ));
+//        data.add(0, SheetData.getPID());
+//        data.add(1,SheetData.getTimeStamp());
+//        data.add(2,1);
         new GoogleSheetSendData(mCredential,sheetID).execute(data);
     }
 
     public void sendCustomData(String sheetID,List<Object> data){
         new GoogleSheetSendData(mCredential,sheetID).execute(data);
     }
-
 
 
     private boolean isGooglePlayServicesAvailable() {
@@ -225,7 +213,7 @@ public class GoogleSheetManager
                     Toast.makeText(mContext,
                             "This app requires Google Play Services. Please install " +
                                     "Google Play Services on your device and relaunch this app.",
-                            Toast.LENGTH_LONG);
+                            Toast.LENGTH_LONG).show();
                 } else {
                     initializeCommunication();
                 }
@@ -271,93 +259,6 @@ public class GoogleSheetManager
 
     }
 
-    private class GoogleSheetGetData extends AsyncTask<Void,Void,List<String>>{
-        private com.google.api.services.sheets.v4.Sheets mService = null;
-        private Exception exception = null;
-
-        GoogleSheetGetData(GoogleAccountCredential credential){
-            HttpTransport transport = AndroidHttp.newCompatibleTransport();
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            mService = new com.google.api.services.sheets.v4.Sheets.Builder(
-                    transport,jsonFactory,credential)
-                    .setApplicationName(SheetData.SPREADSHEET_NAME)
-                    .build();
-        }
-        @Override
-        protected List<String> doInBackground(Void... params) {
-            try{
-                Log.d("EXECUTE", "doInBackGround Called");
-                return getData();
-            }catch (Exception e){
-                Log.d("PROBLEM", "EXCEPTION "+ e.toString()+" Occurred");
-                exception = e;
-                cancel(true);
-                return null;
-            }
-        }
-
-        public List<String> getData() throws IOException {
-
-            ArrayList<String> data = new ArrayList<>();
-            ValueRange response = this.mService.spreadsheets().values().get(
-                    SheetData.SPREADSHEET_ID,
-                    SheetData.getRange(
-                            SheetData.TAPPING_TEST_LH))
-                    .execute();
-
-            List<List<Object>> values = response.getValues();
-            if(values != null){
-                for(List row: values){
-                    String s = "";
-                    for( Object o: row){
-                        s+=o+"  ";
-                    }
-                    System.out.println(s);
-                    data.add(s);
-                }
-            }
-            return data;
-        }
-
-        @Override
-        protected void onCancelled() {
-            if (exception != null) {
-                if (exception instanceof GooglePlayServicesAvailabilityIOException) {
-                    showGooglePlayServicesAvailabilityErrorDialog(
-                            ((GooglePlayServicesAvailabilityIOException) exception)
-                                    .getConnectionStatusCode());
-                } else if (exception instanceof UserRecoverableAuthIOException) {
-                    ((Activity)mContext).startActivityForResult(
-                            ((UserRecoverableAuthIOException) exception).getIntent(),
-                            GoogleSheetManager.REQUEST_AUTHORIZATION);
-                } else {
-                    Toast.makeText(mContext,"The following error occurred:\n"
-                            + exception.getMessage(),Toast.LENGTH_LONG);
-                }
-            } else {
-                Toast.makeText(mContext,"Request cancelled.",Toast.LENGTH_LONG);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<String> strings) {
-
-            pulledData = deepCopy(strings);
-            super.onPostExecute(strings);
-        }
-
-        private List<String>deepCopy(List<String> strings){
-            List<String> s= new ArrayList<>();
-
-            for (String str: strings){
-                s.add(str);
-            }
-
-            return s;
-        }
-
-    }
-
     private class GoogleSheetSendData extends AsyncTask<List<Object>,Void,Void>{
         private com.google.api.services.sheets.v4.Sheets mService = null;
         private String sheetID;
@@ -373,12 +274,13 @@ public class GoogleSheetManager
                     .build();
             this.sheetID = sheetID;
         }
+
         @Override
         protected Void doInBackground(List<Object>... params) {
             try {
                 sendData(params[0]);
             } catch (IOException e) {
-                Log.d("PROBLEM", "EXCEPTION "+ e.toString()+" Occurred");
+                Log.d("PROBLEM", "EXCEPTION \n"+ e.toString()+" Occurred");
                 exception = e;
                 cancel(true);
                 return null;
@@ -388,15 +290,95 @@ public class GoogleSheetManager
         }
 
         private void sendData(List<Object> l) throws IOException {
+            // THIS SECTION IS FROM THE SHEET PROGRAM SENT TO THE WHOLE CLASS
+            //Getting the data from the
+            ValueRange response = mService.spreadsheets().values().get(
+                     SheetData.CENTRAL_SPREADSHEET_ID,
+                     sheetID+"!A2:A"
+            ).execute();
+            List<List<Object>> sheet = response.getValues();
+            int idx = 2;
+            if(sheet != null){
+                for (List r : sheet ) {
+                    if(r.get(0).equals(SheetData.getPID())){
+                        break;
+                    }
+                    idx++;
+                }
+            }
+
+            response = mService.spreadsheets().values()
+                    .get(
+                            SheetData.CENTRAL_SPREADSHEET_ID,
+                            SheetData.getCentralRange(sheetID,idx)
+            ).execute();
+
+            sheet = response.getValues();
+            String colIdx = "A";
+             if(sheet != null){
+                 colIdx = columnToLetter(sheet.get(0).size()+1);
+             }
+            String updateCell = sheetID+"!"+colIdx+idx;
+
+            List<List<Object>> values = new ArrayList<>();
+            List<Object> row = new ArrayList<>();
+
+            if(colIdx.equals("A")){
+                row.add(SheetData.getPID());
+                updateCell+=":B"+idx;
+            }
+
+            float val = 0;
+
+            for(Object o: l){
+                System.out.println(""+o);
+                val+= new Float(""+o);
+
+            }
+            val = val/l.size();
+
+            List<Sheet> sheetList = mService.spreadsheets().get(SheetData.CENTRAL_SPREADSHEET_ID).execute().getSheets();
+            int sheetNumID = -1;
+            for(Sheet s: sheetList){
+                if(s.getProperties().getTitle().equals(sheetID)){
+                    sheetNumID = s.getProperties().getSheetId();
+                }
+            }
+
+            row.add(SheetData.getHyperLink(SheetData.SPREADSHEET_ID,val,sheetNumID));
+            values.add(row);
+
+            System.out.println(updateCell);
+
+            ValueRange vRange = new ValueRange();
+            vRange.setValues(values);
+
+            mService.spreadsheets().values().
+                    update(
+                        SheetData.CENTRAL_SPREADSHEET_ID,
+                        updateCell,
+                        vRange)
+                    .setValueInputOption("USER_ENTERED")
+                    .execute();
+
+            //add data to send in Value range
             ValueRange valueRange = new ValueRange();
             ArrayList<List<Object>> tList = new ArrayList<>();
-            tList.add(l);
+            List<Object> ls = SheetData.getPreFix();
+            ls.addAll(l);
+            tList.add(ls);
             valueRange.setValues(tList);
-               mService.spreadsheets().values().append(
-                SheetData.SPREADSHEET_ID,
-                SheetData.getRange(sheetID),
-                valueRange).setValueInputOption("RAW").execute();
+
+            //sending value range
+            mService.spreadsheets().values().append(
+            SheetData.SPREADSHEET_ID,
+            SheetData.getRange(sheetID),
+            valueRange).setValueInputOption("RAW").execute();
+
+//            mService.
         }
+
+
 
         @Override
         protected void onCancelled() {
@@ -411,12 +393,26 @@ public class GoogleSheetManager
                             GoogleSheetManager.REQUEST_AUTHORIZATION);
                 } else {
                     Toast.makeText(mContext,"The following error occurred:\n"
-                            + exception.getMessage(),Toast.LENGTH_LONG);
+                            + exception.getMessage(),Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(mContext,"Request cancelled.",Toast.LENGTH_LONG);
+                Toast.makeText(mContext,"Request cancelled.",Toast.LENGTH_LONG).show();
             }
         }
+
+        private String columnToLetter(int column) {
+            int temp;
+            String letter = "";
+            while (column > 0)
+            {
+                temp = (column - 1) % 26;
+                letter = ((char)(temp + 65)) + letter;
+                column = (column - temp - 1) / 26;
+            }
+            return letter;
+        }
+
+
     }
 
 

@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
+import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.GoogleSheetManager;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.SheetData;
 
@@ -22,6 +24,7 @@ public class TappingInstr extends Activity {
     Button leftFoot;
     Button rightFoot;
     Button done;
+    Button feedback;
 
     TextView msg;
 
@@ -37,7 +40,8 @@ public class TappingInstr extends Activity {
     int testCount = 0;
     // ~~ This Object allows to send data to Spreadsheets
     GoogleSheetManager googleSheetManager;
-
+    //Make global comment dialog
+    CommentDialog comment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,8 @@ public class TappingInstr extends Activity {
         rightFoot = (Button) findViewById(R.id.right_foot_button);
 
         done = (Button) findViewById(R.id.done_tap_button);
+        // Get the feedback button listener
+        feedback = (Button) findViewById(R.id.feedback);
         msg = (TextView) findViewById(R.id.display_text_msg);
 
         googleSheetManager = new GoogleSheetManager(TappingInstr.this);
@@ -87,14 +93,20 @@ public class TappingInstr extends Activity {
         testCount++;
         startActivityForResult(intent,RF);
     }
-
-
+    // Feedback button on pressed
+    public void typeFeedback(View v){
+        // Initialize the comment dialog with "this" context(activity)
+        comment = new CommentDialog(this);
+        // Create comment dialog and show it
+        comment.create().show();
+    }
 
     public void showResults(View v ){
         Intent intent = new Intent(this, Results.class);
         intent.putExtra(getString(R.string.LEFT),""+ left_hand_avg);
         intent.putExtra(getString(R.string.RIGHT),""+ right_hand_avg);
-
+        // Making simple Toast to display comment, get the text entered in the comment
+        Toast.makeText(this,comment.getTextComment(),Toast.LENGTH_LONG).show();
         startActivity(intent);
     }
 
@@ -106,6 +118,8 @@ public class TappingInstr extends Activity {
         Log.d("RIGHT",""+ right_hand_avg);
         if (testCount == 4){
             done.setVisibility(View.VISIBLE);
+            // Make feedback button visible
+            feedback.setVisibility(View.VISIBLE);
         }
     }
 
