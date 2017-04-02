@@ -87,8 +87,8 @@ public class BalancerInstr extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BalancerInstr.this, Results.class);
-                intent.putExtra(getString(R.string.LEFT),leftAvg);
-                intent.putExtra(getString(R.string.RIGHT),rightAvg);
+                intent.putExtra(getString(R.string.LEFT),""+leftAvg);
+                intent.putExtra(getString(R.string.RIGHT),""+rightAvg);
                 startActivity(intent);
             }
         });

@@ -1,44 +1,59 @@
 package com.cmsc436.ms_diagnostic.tap_check_test;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
+import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.GoogleSheetManager;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.SheetData;
-import com.cmsc436.ms_diagnostic.tap_test.TapActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TappingInstr extends Activity {
 
     Button left_hand;
     Button right_hand;
+    Button leftFoot;
+    Button rightFoot;
     Button done;
+    Button feedback;
 
     TextView msg;
 
-    double left_avg = 0;
-    double right_avg = 0;
+    private final int LH = 1;
+    private final int RH = 2;
+    private final int LF = 3;
+    private final int RF = 4;
+
+    double left_hand_avg = 0;
+    double right_hand_avg = 0;
+    double left_foot_avg = 0;
+    double right_foot_avg = 0;
     int testCount = 0;
     // ~~ This Object allows to send data to Spreadsheets
     GoogleSheetManager googleSheetManager;
-
+    //Make global comment dialog
+    CommentDialog comment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tap_instruction_activity);
         left_hand = (Button) findViewById(R.id.left_hand_button);
         right_hand = (Button) findViewById(R.id.right_hand_button);
+        leftFoot = (Button) findViewById(R.id.left_foot_button);
+        rightFoot = (Button) findViewById(R.id.right_foot_button);
+
         done = (Button) findViewById(R.id.done_tap_button);
+        // Get the feedback button listener
+        feedback = (Button) findViewById(R.id.feedback);
         msg = (TextView) findViewById(R.id.display_text_msg);
 
         googleSheetManager = new GoogleSheetManager(TappingInstr.this);
@@ -51,26 +66,47 @@ public class TappingInstr extends Activity {
 
 
 
-    public void startLeftTest(View v){
+    public void startLeftHandTest(View v){
         Intent intent = new Intent(this,TappingTest.class);
         left_hand.setVisibility(View.GONE);
         testCount++;
-        startActivityForResult(intent,1);
+        startActivityForResult(intent,LH);
     }
 
-
-    public void startRightTest(View v){
+    public void startRightHandTest(View v){
         Intent intent = new Intent(this,TappingTest.class);
         right_hand.setVisibility(View.GONE);
         testCount++;
-        startActivityForResult(intent,2);
+        startActivityForResult(intent,RH);
+    }
+
+    public void startLeftFootTest(View v){
+        Intent intent = new Intent(this,TappingTest.class);
+        leftFoot.setVisibility(View.GONE);
+        testCount++;
+        startActivityForResult(intent,LF);
+    }
+
+    public void startRightFootTest(View v){
+        Intent intent = new Intent(this,TappingTest.class);
+        rightFoot.setVisibility(View.GONE);
+        testCount++;
+        startActivityForResult(intent,RF);
+    }
+    // Feedback button on pressed
+    public void typeFeedback(View v){
+        // Initialize the comment dialog with "this" context(activity)
+        comment = new CommentDialog(this);
+        // Create comment dialog and show it
+        comment.create().show();
     }
 
     public void showResults(View v ){
         Intent intent = new Intent(this, Results.class);
-        intent.putExtra(getString(R.string.LEFT),""+left_avg);
-        intent.putExtra(getString(R.string.RIGHT),""+right_avg);
-
+        intent.putExtra(getString(R.string.LEFT),""+ left_hand_avg);
+        intent.putExtra(getString(R.string.RIGHT),""+ right_hand_avg);
+        // Making simple Toast to display comment, get the text entered in the comment
+        Toast.makeText(this,comment.getTextComment(),Toast.LENGTH_LONG).show();
         startActivity(intent);
     }
 
@@ -78,32 +114,50 @@ public class TappingInstr extends Activity {
     protected void onResume() {
         super.onResume();
 
-        Log.d("LEFT",""+left_avg);
-        Log.d("RIGHT",""+right_avg);
-        if (testCount == 2){
+        Log.d("LEFT",""+ left_hand_avg);
+        Log.d("RIGHT",""+ right_hand_avg);
+        if (testCount == 4){
             done.setVisibility(View.VISIBLE);
+            // Make feedback button visible
+            feedback.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
+        if (requestCode == LH) {
             if (resultCode == Activity.RESULT_OK) {
-                left_avg = (double)(data.getIntExtra("data", -1))/3;
+                left_hand_avg = (double)(data.getIntExtra("data", -1))/3;
 
                 //~~ Sending data to the Spreadsheet
                 googleSheetManager.sendData(
                         SheetData.TAPPING_TEST_LH,
                         (ArrayList<Object>)data.getSerializableExtra(TappingTest.DATA_LIST));
-               //msg.setText(msg.getText() + "[LEFT:" + left_avg + "]");
+               //msg.setText(msg.getText() + "[LEFT:" + left_hand_avg + "]");
             }
-        } else if( requestCode == 2) {
+        } else if( requestCode == RH) {
             if (resultCode == Activity.RESULT_OK) {
-                right_avg = (double)(data.getIntExtra("data", -1))/3;
+                right_hand_avg = (double)(data.getIntExtra("data", -1))/3;
                 googleSheetManager.sendData(
                         SheetData.TAPPING_TEST_RH,
                         (ArrayList<Object>)data.getSerializableExtra(TappingTest.DATA_LIST));
-                //msg.setText(msg.getText() + "[RIGHT:" + right_avg + "]");
+                //msg.setText(msg.getText() + "[RIGHT:" + right_hand_avg + "]");
+            }
+        } else if(requestCode == LF){
+            if(resultCode == RESULT_OK){
+                left_foot_avg = (double) data.getIntExtra("data", -1)/3;
+                googleSheetManager.sendData(
+                        SheetData.TAPPING_TEST_LF,
+                        (ArrayList<Object>) data.getSerializableExtra(TappingTest.DATA_LIST)
+                );
+            }
+        } else if(requestCode == RF){
+            if(resultCode == RESULT_OK){
+                right_foot_avg = (double) data.getIntExtra("data", -1)/3;
+                googleSheetManager.sendData(
+                        SheetData.TAPPING_TEST_RF,
+                        (ArrayList<Object>) data.getSerializableExtra(TappingTest.DATA_LIST)
+                );
             }
         }
         else {

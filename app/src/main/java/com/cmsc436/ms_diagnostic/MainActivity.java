@@ -1,25 +1,25 @@
 package com.cmsc436.ms_diagnostic;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
-import com.cmsc436.ms_diagnostic.balloon_test.BubbleActivity;
 import com.cmsc436.ms_diagnostic.balloon_test.BubbleInstr;
-import com.cmsc436.ms_diagnostic.flex_test.FlexCalibrate;
+import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.flex_test.FlexInstr;
-import com.cmsc436.ms_diagnostic.google_spread_sheets.TestGoogleAPI;
-import com.cmsc436.ms_diagnostic.google_spread_sheets.TestGoogleComm;
-import com.cmsc436.ms_diagnostic.level_test.Balancer;
 import com.cmsc436.ms_diagnostic.level_test.BalancerInstr;
-import com.cmsc436.ms_diagnostic.sprial_test.Trace;
 import com.cmsc436.ms_diagnostic.sprial_test.TraceInstr;
 import com.cmsc436.ms_diagnostic.tap_check_test.TappingInstr;
 
 public class MainActivity extends Activity {
+
+   // CommentDialog comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +32,23 @@ public class MainActivity extends Activity {
 
     // changes
     public void toTapActivity(View view){
-       // startActivity(new Intent(MainActivity.this,TapActivity.class));
+       // startActivity(new Intent(MainActivity.this,TapActivity.class)); NO LONGER USING
         startActivity(new Intent(MainActivity.this,TappingInstr.class));
+//        comment = new CommentDialog(this);
+//
+//
+//        comment.create().show();
+//
+//
+//        comment.getTextComment();
+//
+//
+
+
+
 
 
     }
-
 
     public void startSpiralTest(View v){
         Intent spiral_intent = new Intent(this,TraceInstr.class);
