@@ -3,7 +3,10 @@ package com.cmsc436.ms_diagnostic.google_spread_sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Shubham Patel
@@ -14,6 +17,8 @@ public class SheetData {
 
     public static final String SPREADSHEET_NAME = "CMSC436 App Template";
     public static final String SPREADSHEET_ID = "1nxEXLLuyhMz5e2RNfAn-Zs1soCQRG-8nk6aUsnMvKSc";
+    public static final String CENTRAL_SPREADSHEET_NAME = "CMSC436 App Template Central";
+    public static final String CENTRAL_SPREADSHEET_ID = "1BTfMpMri4M1cUkyIV5lecTxS9QBOJ1BGN6HJC9SSMkg";
     private static final String TEAM_ID = "07";
     private static final String MEMBER_ID = "01";
 
@@ -58,9 +63,30 @@ public class SheetData {
     }
 
     public static String getTimeStamp(){
-            Date d = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss");
-            return sdf.format(d);
+        Calendar c = Calendar.getInstance();
+//        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        return sdf.format(c.getTime());
+    }
+
+    public static String getCentralRange(String id, int row){
+        return id+"!"+row+":"+row;
+    }
+
+    public static List<Object> getPreFix(){
+        List<Object> list = new ArrayList<>();
+        list.add(getPID());
+        list.add(getTimeStamp());
+        list.add(1);//data
+        return list;
+    }
+
+    public static String getHyperTextLinkURL(String SheetID,int sheetNumID){
+        return "https://docs.google.com/spreadsheets/d/"+SheetID+"/edit#grid="+sheetNumID;
+    }
+
+    public static String getHyperLink(String sheetID, Object data,int sheetNumID){
+        return "=HYPERLINK(\""+getHyperTextLinkURL(sheetID,sheetNumID)+"\",\""+data+"\")";
     }
 
 
