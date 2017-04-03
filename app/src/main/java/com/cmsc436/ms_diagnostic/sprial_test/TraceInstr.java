@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
+import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.GoogleSheetManager;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.SheetData;
 
@@ -19,10 +21,11 @@ public class TraceInstr extends AppCompatActivity {
     private final int RIGHT = 2;
 
     private final String DATA = "DATA";
-
+    private CommentDialog comment;
     Button leftButton;
     Button rightButton;
     Button doneButton;
+    Button feedbackButton;
 
     private long leftScore = 0;
     private long rightScore = 0;
@@ -39,6 +42,8 @@ public class TraceInstr extends AppCompatActivity {
         leftButton = (Button) findViewById(R.id.trace_instr_left);
         rightButton = (Button) findViewById(R.id.trace_instr_right);
         doneButton = (Button) findViewById(R.id.trace_inst_done);
+        feedbackButton = (Button) findViewById(R.id.trace_feedback);
+
 
         googleSheetManager = new GoogleSheetManager(TraceInstr.this);
         googleSheetManager.initializeCommunication();
@@ -60,7 +65,7 @@ public class TraceInstr extends AppCompatActivity {
         Intent intent = new Intent(this, Results.class);
         intent.putExtra(getString(R.string.LEFT),""+leftScore);
         intent.putExtra(getString(R.string.RIGHT),""+rightScore);
-
+        Toast.makeText(this,comment.getTextComment(), Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 
@@ -70,6 +75,7 @@ public class TraceInstr extends AppCompatActivity {
 
         if (testCount == 2){
             doneButton.setVisibility(View.VISIBLE);
+            feedbackButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -94,5 +100,12 @@ public class TraceInstr extends AppCompatActivity {
         else {
             googleSheetManager.setServices(requestCode,resultCode,data);
         }
+    }
+
+    public void traceFeedback(View view) {
+        comment= new CommentDialog(this);
+        comment.create().show();
+
+
     }
 }

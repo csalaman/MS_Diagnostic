@@ -44,6 +44,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bubble_instr_done"
-            android:visibility="gone" />
+            android:visibility="invisible" />
+        <Button
+            android:text="Feedback"
+            android:onClick="typeFeedback"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/feedback"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/done_tap_button" />
     </LinearLayout>
 </RelativeLayout>

@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
+import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.GoogleSheetManager;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.SheetData;
 
@@ -18,10 +20,11 @@ public class BubbleInstr extends AppCompatActivity {
 
     final int LEFT_CODE = 1;
     final int RIGHT_CODE = 2;
-
+    CommentDialog new_comment;
     Button leftButton;
     Button rightButton;
     Button doneButton;
+    Button feedbackButton;
 
     // number of trials done
     private long leftTrial;
@@ -41,6 +44,8 @@ public class BubbleInstr extends AppCompatActivity {
         leftButton = (Button) findViewById(R.id.bubble_instr_left);
         rightButton = (Button) findViewById(R.id.bubble_instr_right);
         doneButton = (Button) findViewById(R.id.bubble_instr_done);
+        feedbackButton = (Button) findViewById(R.id.feedback);
+
 
 
         googleSheetManager = new GoogleSheetManager(BubbleInstr.this);
@@ -68,20 +73,27 @@ public class BubbleInstr extends AppCompatActivity {
                 Intent intent = new Intent(BubbleInstr.this, Results.class);
                 intent.putExtra(getString(R.string.LEFT),""+leftTrial);
                 intent.putExtra(getString(R.string.RIGHT),""+rightTrial);
+                Toast.makeText(BubbleInstr.this,new_comment.getTextComment(),Toast.LENGTH_LONG).show();   //import to Googlesheet
                 startActivity(intent);
             }
         });
+        //feedbackButton.setVisibility(View.INVISIBLE);
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if(leftDone && rightDone){
             doneButton.setVisibility(View.VISIBLE);
+            feedbackButton.setVisibility(View.VISIBLE);
         }
     }
-
+    public void typeFeedback(View v){
+        new_comment = new CommentDialog(this);
+        new_comment.create().show();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == LEFT_CODE){

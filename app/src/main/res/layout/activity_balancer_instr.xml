@@ -45,5 +45,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/balancer_inst_done"
             android:visibility="gone" />
+        <Button
+            android:text="Feedback"
+            android:onClick="balancerFeedback"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trace_feedback"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/balancer_inst_done" />
     </LinearLayout>
 </RelativeLayout>

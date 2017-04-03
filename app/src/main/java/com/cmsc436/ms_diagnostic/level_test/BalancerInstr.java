@@ -5,11 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
+import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.GoogleSheetManager;
 import com.cmsc436.ms_diagnostic.google_spread_sheets.SheetData;
+
+import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +32,11 @@ public class BalancerInstr extends AppCompatActivity {
     final static int LEFT_CODE = 1;
     final static int RIGHT_CODE = 2;
 
-
+    CommentDialog new_comment;
     Button leftButton;
     Button rightButton;
     Button doneButton;
+    Button feedbackButton;
 
     // number of trials done
     private int leftTrial;
@@ -54,6 +59,7 @@ public class BalancerInstr extends AppCompatActivity {
         leftButton = (Button) findViewById(R.id.balancer_instr_left);
         rightButton = (Button) findViewById(R.id.balancer_inst_right);
         doneButton = (Button) findViewById(R.id.balancer_inst_done);
+        feedbackButton = (Button) findViewById(R.id.trace_feedback);
 
         leftTrial = 1;
         rightTrial = 1;
@@ -89,6 +95,7 @@ public class BalancerInstr extends AppCompatActivity {
                 Intent intent = new Intent(BalancerInstr.this, Results.class);
                 intent.putExtra(getString(R.string.LEFT),""+leftAvg);
                 intent.putExtra(getString(R.string.RIGHT),""+rightAvg);
+                Toast.makeText(BalancerInstr.this,new_comment.getTextComment(), Toast.LENGTH_LONG).show();
                 startActivity(intent);
             }
         });
@@ -111,6 +118,7 @@ public class BalancerInstr extends AppCompatActivity {
         }
         if(leftTrial > 3 && rightTrial > 3){
             doneButton.setVisibility(View.VISIBLE);
+            feedbackButton.setVisibility(View.VISIBLE);
         }
 
         super.onResume();
@@ -139,5 +147,11 @@ public class BalancerInstr extends AppCompatActivity {
         }else{
             googleSheetManager.setServices(requestCode,resultCode,data);
         }
+    }
+
+    public void balancerFeedback(View view) {
+        new_comment  = new CommentDialog(this);
+        new_comment.create().show();
+
     }
 }

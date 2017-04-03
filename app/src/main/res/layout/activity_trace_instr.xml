@@ -52,11 +52,24 @@
     </LinearLayout>
     <Button
         android:text="Done"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:id="@+id/trace_inst_done"
         android:visibility="invisible"
+        android:layout_marginStart="85dp"
         android:onClick="doneTest"/>
+    <Button
+        android:text="Feedback"
+        android:onClick="traceFeedback"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/trace_feedback"
+        android:layout_alignParentBottom="true"
+
+        android:layout_toEndOf="@+id/trace_inst_done" />
+
+
 </RelativeLayout>
