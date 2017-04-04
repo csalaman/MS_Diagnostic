@@ -9,7 +9,7 @@
     <string name="tap_start_tapping">START TAPPING</string>
     <string name="Main_message">This is a Multiple Sclerosis Test. When ready, Start the Test.</string>
     <string name="tap_activity_done">Done!</string>
-    <string name="timer_text">Timer</string>
+    <string name="timer_text">Timer:</string>
     <string name="start_timer">Start</string>
     <string name="stop_timer">Stop</string>
     <string name="LEFT">LEFT</string>

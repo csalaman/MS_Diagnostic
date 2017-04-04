@@ -9,6 +9,10 @@ import android.widget.Button;
 
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
+import com.cmsc436.ms_diagnostic.google_spread_sheets.GoogleSheetManager;
+import com.cmsc436.ms_diagnostic.google_spread_sheets.SheetData;
+
+import java.util.ArrayList;
 
 public class FlexInstr extends AppCompatActivity {
 
@@ -20,6 +24,7 @@ public class FlexInstr extends AppCompatActivity {
     boolean calibrated,leftDone,rightDone = false;
     float[] rest,flex;
     long leftTime,rightTime;
+    GoogleSheetManager googleSheetManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +33,8 @@ public class FlexInstr extends AppCompatActivity {
         rightTest = (Button) findViewById(R.id.flex_instr_right);
         calibrate = (Button) findViewById(R.id.flex_instr_calibrate);
         doneButton = (Button) findViewById(R.id.flex_instr_done);
+        googleSheetManager = new GoogleSheetManager(this);
+        googleSheetManager.initializeCommunication();
 
 //        rightTest.setVisibility(View.GONE);
 //        leftTest.setVisibility(View.GONE);
@@ -105,9 +112,13 @@ public class FlexInstr extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 leftTime = (data.getLongExtra(FlexTest.TO_REST,0) +
                         data.getLongExtra(FlexTest.TO_FLEX,0))/3;
+                ArrayList<Object> list = (ArrayList<Object>) data.getSerializableExtra(FlexTest.LIST_FLEX);
+//                list.addAll((ArrayList<Object>) data.getSerializableExtra(FlexTest.LIST_REST));
+                googleSheetManager.sendData(SheetData.FLEX_TEST_LH,list);
                 if(leftTime == 0){
                     Log.d("TESTX", "LEFT TIME");
                 }
+
                 leftDone = true;
                 leftTest.setVisibility(View.GONE);
             }
@@ -119,9 +130,17 @@ public class FlexInstr extends AppCompatActivity {
                 if(leftTime == 0){
                     Log.d("TESTX", "RIHT TIME");
                 }
+
+                ArrayList<Object> list = (ArrayList<Object>) data.getSerializableExtra(FlexTest.LIST_FLEX);
+//                list.addAll((ArrayList<Object>) data.getSerializableExtra(FlexTest.LIST_REST));
+                googleSheetManager.sendData(SheetData.FLEX_TEST_RH,list);
+
                 rightDone = true;
                 rightTest.setVisibility(View.GONE);
             }
+        }
+        else {
+            googleSheetManager.setServices(requestCode,resultCode,data);
         }
     }
 }

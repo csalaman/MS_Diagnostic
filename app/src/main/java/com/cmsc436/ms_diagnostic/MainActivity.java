@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.cmsc436.ms_diagnostic.balloon_test.BubbleActivity;
 import com.cmsc436.ms_diagnostic.balloon_test.BubbleInstr;
 import com.cmsc436.ms_diagnostic.dialog_comment.CommentDialog;
 import com.cmsc436.ms_diagnostic.flex_test.FlexInstr;
@@ -69,10 +70,10 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this,FlexInstr.class);
         startActivity(intent);
     }
-    public void startBubble(View v){
-        Intent intent = new Intent(this,BubbleActivity.class);
-        startActivity(intent);
-    }
+//    public void startBubble(View v){
+//        Intent intent = new Intent(this,BubbleActivity.class);
+//        startActivity(intent);
+//    }
 
 //    public void Circle_Activity(View view){
 //        Intent circle_intent = new Intent(this, CircleActivity.class);

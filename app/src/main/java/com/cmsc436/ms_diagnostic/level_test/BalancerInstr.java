@@ -95,7 +95,7 @@ public class BalancerInstr extends AppCompatActivity {
                 Intent intent = new Intent(BalancerInstr.this, Results.class);
                 intent.putExtra(getString(R.string.LEFT),""+leftAvg);
                 intent.putExtra(getString(R.string.RIGHT),""+rightAvg);
-                Toast.makeText(BalancerInstr.this,new_comment.getTextComment(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(BalancerInstr.this,new_comment.getTextComment(), Toast.LENGTH_LONG).show();
                 startActivity(intent);
             }
         });

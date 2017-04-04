@@ -73,7 +73,7 @@ public class BubbleInstr extends AppCompatActivity {
                 Intent intent = new Intent(BubbleInstr.this, Results.class);
                 intent.putExtra(getString(R.string.LEFT),""+leftTrial);
                 intent.putExtra(getString(R.string.RIGHT),""+rightTrial);
-                Toast.makeText(BubbleInstr.this,new_comment.getTextComment(),Toast.LENGTH_LONG).show();   //import to Googlesheet
+//                Toast.makeText(BubbleInstr.this,new_comment.getTextComment(),Toast.LENGTH_LONG).show();   //import to Googlesheet
                 startActivity(intent);
             }
         });

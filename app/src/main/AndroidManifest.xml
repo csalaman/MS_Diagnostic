@@ -39,15 +39,15 @@
         <activity android:name=".level_test.BalancerInstr" />
         <activity android:name=".level_test.Balancer_Test" />
         <activity android:name=".balloon_test.BubbleInstr" />
-        <activity android:name=".flex_test.FlexInstr" />
+        <activity android:name=".flex_test.FlexInstr"
+            android:screenOrientation="reverseLandscape"/>
         <activity
             android:name=".flex_test.FlexTest"
-            android:screenOrientation="reverseLandscape" />
+            android:screenOrientation="reverseLandscape"></activity>
         <activity
             android:name=".flex_test.FlexCalibrate"
             android:screenOrientation="reverseLandscape" />
-
-        <activity android:name=".feedback.Main3Activity"></activity>
+        <activity android:name=".TestDialogActivity"></activity>
     </application>
 
 </manifest>

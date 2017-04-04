@@ -106,7 +106,7 @@ public class TappingInstr extends Activity {
         intent.putExtra(getString(R.string.LEFT),""+ left_hand_avg);
         intent.putExtra(getString(R.string.RIGHT),""+ right_hand_avg);
         // Making simple Toast to display comment, get the text entered in the comment
-        Toast.makeText(this,comment.getTextComment(),Toast.LENGTH_LONG).show();
+//        Toast.makeText(this,comment.getTextComment(),Toast.LENGTH_LONG).show();
         startActivity(intent);
     }
 

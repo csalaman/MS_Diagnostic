@@ -72,6 +72,7 @@ public class TappingTest extends Activity {
                     result.putExtra(TappingTest.DATA_LIST,data);
 
                     setResult(Activity.RESULT_OK,result);
+
                     finish();
                 }
             }
@@ -79,6 +80,7 @@ public class TappingTest extends Activity {
 
 
     }
+
 
 
     public void startTest(View v){

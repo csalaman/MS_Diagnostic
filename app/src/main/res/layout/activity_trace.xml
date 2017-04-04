@@ -9,67 +9,83 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cmsc436.ms_diagnostic.sprial_test.Trace">
-
-    <TextView
-        android:text="@string/timer_text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:textSize="@dimen/timer_size"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:orientation="vertical"
+        android:id="@+id/trace_top_linear_layout"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <TextView
+                android:text="@string/timer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView"
+                android:textSize="@dimen/timer_size"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                />
 
-    <Chronometer
-        android:countDown="false"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/timer_object"
-        android:textSize="@dimen/timer_size"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/timer_object"
-        android:id="@+id/trace_frame_layout">
+            <Chronometer
+                android:countDown="false"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/timer_object"
+                android:textSize="@dimen/timer_size"
+                android:layout_below="@+id/textView"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/trace_bottom_linear_layout"
+            android:gravity="center"
+            android:layout_below="@id/trace_top_linear_layout">
 
-        <ImageView
+            <Button
+                android:text="@string/start_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/start_button"
+                android:onClick="startTimer"
+                android:background="@color/colorAccent"/>
 
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:foregroundGravity="center"
-            android:background = "@drawable/ic_spiral_svg2"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
-
-        <com.cmsc436.ms_diagnostic.sprial_test.DrawView
+            <Button
+                android:text="@string/stop_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/stop_button"
+                android:onClick="stopTimer"
+                android:background="@color/colorAccent"/>
+        </LinearLayout>
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/trace_draw_view"/>
-    </FrameLayout>
+            android:layout_below="@id/timer_object"
+            android:id="@+id/trace_frame_layout">
 
-    <Button
-        android:text="@string/start_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/start_button"
-        android:onClick="startTimer"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/timer_object"
-        android:layout_toStartOf="@+id/timer_object"
-        android:background="@color/colorAccent"/>
+            <!--<ImageView-->
 
-    <Button
-        android:text="@string/stop_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/stop_button"
-        android:onClick="stopTimer"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/timer_object"
-        android:layout_toEndOf="@+id/timer_object"
-        android:background="@color/colorAccent"/>
+                <!--android:layout_width="300dp"-->
+                <!--android:layout_height="300dp"-->
+                <!--android:foregroundGravity="center"-->
+                <!--android:background = "@drawable/ic_spiral_svg2"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_centerHorizontal="true" />-->
+
+            <com.cmsc436.ms_diagnostic.sprial_test.DrawView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/trace_draw_view"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
 
 
 </RelativeLayout>
