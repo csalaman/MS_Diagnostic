@@ -302,7 +302,7 @@ public class GoogleSheetManager
             int idx = 2;
             if(sheet != null){
                 for (List r : sheet ) {
-                    if(r.get(0).equals(SheetData.getPID())){
+                    if(r.size() > 0&&r.get(0).equals(SheetData.getPID())){
                         break;
                     }
                     idx++;
