@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -15,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -25,7 +27,10 @@ import android.widget.Toast;
 import com.cmsc436.ms_diagnostic.R;
 import com.cmsc436.ms_diagnostic.Results;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class Trace extends AppCompatActivity {
 
@@ -36,6 +41,7 @@ public class Trace extends AppCompatActivity {
     private DrawView draw_event;
 
     public static final String DATA_LIST = "DATALIST";
+    public static final String METRIC_LIST = "METRICLIST";
     public static final String DATA = "DATA";
 
     public static final String STATE_LH = "Left_Hand_Sec";
@@ -48,6 +54,7 @@ public class Trace extends AppCompatActivity {
     private int testCount = 0;
 
     ArrayList<Object> data;
+    ArrayList<Object> metric;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +101,7 @@ public class Trace extends AppCompatActivity {
         draw_event.setVisibility(View.GONE);
 
         data = new ArrayList<>();
-
+        metric = new ArrayList<>();
     }
 
     @Override
@@ -122,6 +129,7 @@ public class Trace extends AppCompatActivity {
 
         //~~ updating the time to data
         data.add(elapsedTime);
+        metric.add(getScore(elapsedTime));
         totalTime+=elapsedTime;
         final FrameLayout relativeLayout = (FrameLayout) findViewById(R.id.trace_frame_layout);
 //        final RelativeLayout relativeLayout = (RelativeLayout) getWindow().getDecorView().getRootView();
@@ -131,8 +139,12 @@ public class Trace extends AppCompatActivity {
 
         Bitmap finalBM = finalBitmap(backLayer);
 
-        String title = (testCount == 1) ? "left_spiral":"right_spiral";
+
+//        String title = (testCount == 1) ? "left_spiral":"right_spiral";
+        String title = (new SimpleDateFormat("yyyddMM_HHmmss")).format(Calendar.getInstance().getTime());
+        Log.d("PICNAME",title);
         MediaStore.Images.Media.insertImage(getContentResolver(), finalBM, title , "");
+//        MediaStore.Images.Media.insertImage(getContentResolver(),)
 
 
         draw_event.setVisibility(View.GONE);
@@ -144,11 +156,20 @@ public class Trace extends AppCompatActivity {
 //        }else{
         if(testCount == 3){
 
-            Intent intent = new Intent();
-            intent.putExtra(DATA,totalTime);
-            intent.putExtra(DATA_LIST,data);
-            setResult(RESULT_OK,intent);
-            finish();
+            start_button.setVisibility(View.GONE);
+            stop_button.setText("Done");
+            stop_button.setEnabled(true);
+            stop_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra(DATA,totalTime);
+                    intent.putExtra(DATA_LIST,data);
+                    intent.putExtra(METRIC_LIST,metric);
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+            });
 
 //            right_h_time = elapsedTime;
             // Exit transition
@@ -172,6 +193,55 @@ public class Trace extends AppCompatActivity {
         canvas.drawBitmap(b1,0,0,null);
 
         return overlay;
+    }
+
+    private float getScore(long time){
+//
+//        List<PointF> spiral = draw_event.getSpiralCoordinats();
+//        List<PointF> drawn = draw_event.getDrawnCoordinates();
+
+        List<Float> spiralRadius = getRadiusAngle(draw_event.getSpiralCoordinats());
+        List<Float> drawnRadius = getRadiusAngle(draw_event.getDrawnCoordinates());
+
+        float sdSpiral = getStdDev(spiralRadius);
+        float sdDraw = getStdDev(drawnRadius);
+
+//        return (float) Math.pow(sdSpiral - sdDraw,2)/time;
+        return Math.abs(sdSpiral - sdDraw);
+    }
+    private List<Float> getRadiusAngle(List<PointF> l){
+        PointF center = draw_event.getCenter();
+        ArrayList<Float> radiusList = new ArrayList<>();
+        for(PointF p: l){
+            radiusList.add(getRadius(center,p));
+        }
+
+        return radiusList;
+    }
+
+    private float getRadius(PointF a, PointF b){
+        return (float)Math.sqrt((Math.pow((a.x - b.x),2))
+                +(Math.pow((a.y - b.y),2)));
+    }
+
+    private float getAverage(List<Float> l){
+        float sum = 0.0f;
+        for(Float f: l){
+            sum+=f;
+        }
+
+        return sum/l.size();
+    }
+
+    private float getStdDev(List<Float> l){
+        float avg = getAverage(l);
+
+        float sd = 0.0f;
+        for(Float f: l){
+            sd += Math.pow(f - avg,2);
+        }
+
+        return (float) Math.sqrt(sd);
     }
 
 }

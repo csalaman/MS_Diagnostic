@@ -55,7 +55,7 @@ public class BubbleActivity extends Activity{
                     @Override
                     public void onClick(View v) {
                         // I know this is bad coding but iam too lazy atm...
-                        data.add("N/A");
+//                        data.add("N/A");
                         data.add(bubble.getAverageTime());
                         Intent intent = new Intent();
                         intent.putExtra(SCORE,bubble.getAverageTime());

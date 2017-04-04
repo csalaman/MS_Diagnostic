@@ -65,7 +65,7 @@ public class TraceInstr extends AppCompatActivity {
         Intent intent = new Intent(this, Results.class);
         intent.putExtra(getString(R.string.LEFT),""+leftScore);
         intent.putExtra(getString(R.string.RIGHT),""+rightScore);
-        Toast.makeText(this,comment.getTextComment(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,comment.getTextComment(), Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 
@@ -84,17 +84,21 @@ public class TraceInstr extends AppCompatActivity {
         if(requestCode == 1){
             if(resultCode == RESULT_OK) {
                 leftScore = data.getLongExtra(DATA, 0) / 3;
+                ArrayList<Object> list = ((ArrayList<Object>) data.getSerializableExtra(Trace.DATA_LIST));
+                list.addAll((ArrayList<Object>) data.getSerializableExtra(Trace.METRIC_LIST));
                 googleSheetManager.sendData(
                         SheetData.SPIRAL_TEST_LH,
-                        (ArrayList<Object>) data.getSerializableExtra(Trace.DATA_LIST));
+                        list);
             }
         }
         else if(requestCode == 2){
             if(resultCode == RESULT_OK) {
                 rightScore = data.getLongExtra(DATA, 0);
+                ArrayList<Object> list = ((ArrayList<Object>) data.getSerializableExtra(Trace.DATA_LIST));
+                list.addAll((ArrayList<Object>) data.getSerializableExtra(Trace.METRIC_LIST));
                 googleSheetManager.sendData(
                         SheetData.SPIRAL_TEST_RH,
-                        (ArrayList<Object>) data.getSerializableExtra(Trace.DATA_LIST));
+                        list);
             }
         }
         else {
