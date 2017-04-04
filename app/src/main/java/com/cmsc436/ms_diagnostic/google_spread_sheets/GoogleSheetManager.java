@@ -292,10 +292,12 @@ public class GoogleSheetManager
         private void sendData(List<Object> l) throws IOException {
             // THIS SECTION IS FROM THE SHEET PROGRAM SENT TO THE WHOLE CLASS
             //Getting the data from the
+            Log.d("SENDDATA_REQ","First REQ DONE");
             ValueRange response = mService.spreadsheets().values().get(
                      SheetData.CENTRAL_SPREADSHEET_ID,
                      sheetID+"!A2:A"
             ).execute();
+            Log.d("SENDDATA_REQ","First REQ DONE");
             List<List<Object>> sheet = response.getValues();
             int idx = 2;
             if(sheet != null){
@@ -312,6 +314,7 @@ public class GoogleSheetManager
                             SheetData.CENTRAL_SPREADSHEET_ID,
                             SheetData.getCentralRange(sheetID,idx)
             ).execute();
+            Log.d("SENDDATA_REQ","Second REQ DONE");
 
             sheet = response.getValues();
             String colIdx = "A";
@@ -360,7 +363,7 @@ public class GoogleSheetManager
                         vRange)
                     .setValueInputOption("USER_ENTERED")
                     .execute();
-
+            Log.d("SENDDATA_REQ","THIRD REQ DONE");
             //add data to send in Value range
             ValueRange valueRange = new ValueRange();
             ArrayList<List<Object>> tList = new ArrayList<>();

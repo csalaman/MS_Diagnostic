@@ -18,15 +18,24 @@ public class SheetData {
     public static final String SPREADSHEET_NAME = "CMSC436 App Template";
     public static final String SPREADSHEET_ID = "1nxEXLLuyhMz5e2RNfAn-Zs1soCQRG-8nk6aUsnMvKSc";
     public static final String CENTRAL_SPREADSHEET_NAME = "CMSC436 App Template Central";
-    public static final String CENTRAL_SPREADSHEET_ID = "1BTfMpMri4M1cUkyIV5lecTxS9QBOJ1BGN6HJC9SSMkg";
+//    public static final String CENTRAL_SPREADSHEET_ID = "1BTfMpMri4M1cUkyIV5lecTxS9QBOJ1BGN6HJC9SSMkg"; // test
+public static final String CENTRAL_SPREADSHEET_ID = "1YvI3CjS4ZlZQDYi5PaiA7WGGcoCsZfLoSFM0IdvdbDU"; // main
     private static final String TEAM_ID = "07";
-    private static final String MEMBER_ID = "01";
-
+    private static final String MEMBER_ID = "01"; //Change your ID Here
+    /*Sam - 01
+    * Henry - 02
+    * Carlos - 03
+    * Lauren - 04
+    * Khanh - 05
+    * if someone wants a different one lemme know
+    * */
 
     public static final String TAPPING_TEST_LH = "Tapping Test (LH)";
     public static final String TAPPING_TEST_RH = "Tapping Test (RH)";
     public static final String TAPPING_TEST_LF = "Tapping Test (LF)";
+//    public static final String TAPPING_TEST_LF = "a";
     public static final String TAPPING_TEST_RF = "Tapping Test (RF)";
+
 
     public static final String SPIRAL_TEST_LH = "Spiral Test (LH)";
     public static final String SPIRAL_TEST_RH = "Spiral Test (RH)";
@@ -37,10 +46,11 @@ public class SheetData {
     public static final String LEVEL_TEST_LH = "Level Test (LH)";
     public static final String LEVEL_TEST_RH = "Level Test (RH)";
 
-
+    public static final String FLEX_TEST_LH = "Curling Test (LH)";
+    public static final String FLEX_TEST_RH = "Curling Test (RH)";
 
     public static String getPID(){
-        ValueRange v = new ValueRange();
+//        ValueRange v = new ValueRange();
 
         return "t"+TEAM_ID+"p"+MEMBER_ID;
     }
@@ -53,11 +63,14 @@ public class SheetData {
         else if(testID.contains("Spi")){
             return testID+"!A:F";
         }
-        if(testID.contains("Ball")){
+        else if(testID.contains("Ball")){
             return testID+"!A:F";
         }
-        if(testID.contains("Lev")){
+        else if(testID.contains("Lev")){
             return testID+"!A:G";
+        }
+        else if(testID.contains("Cur")){
+            return testID+"!A:I";
         }
         return " ";
     }
